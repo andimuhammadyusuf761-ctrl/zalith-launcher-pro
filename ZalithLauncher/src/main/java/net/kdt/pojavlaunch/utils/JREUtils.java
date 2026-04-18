@@ -507,6 +507,12 @@ public final class JREUtils {
         userArgs.add("-Dorg.lwjgl.util.NoChecks=true");
         // Fix sodium/embeddium checks
         userArgs.add("-Dsodium.checks.issue2561=false");
+        // ImGUI ARM64 support: Tell imgui-java to load our ARM64 native lib
+        // instead of extracting the bundled x86_64 .so from the mod JAR.
+        // CRITICAL: This MUST be a -D JVM arg, not System.setProperty(),
+        // because Minecraft runs in a separate JRE VM (not the Android ART VM).
+        userArgs.add("-Dimgui.library.path=" + DIR_NATIVE_LIB);
+        userArgs.add("-Dimgui.library.name=imgui-java64");
         // ===== End Mod Compatibility Fixes =====
 
         // ===== Zalith Remake FPS Boost v2: Version-Specific Optimization =====
