@@ -886,6 +886,7 @@ public class GLFW
     public static PointerBuffer glfwGetMonitors() {
         PointerBuffer pBuffer = PointerBuffer.allocateDirect(1);
         pBuffer.put(glfwGetPrimaryMonitor());
+        pBuffer.rewind(); // Reset position to 0 so callers can read from the start
         return pBuffer;
     }
 

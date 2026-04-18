@@ -488,11 +488,10 @@ public final class JREUtils {
         userArgs.add("-XX:ActiveProcessorCount=" + java.lang.Runtime.getRuntime().availableProcessors());
 
         // ===== Zalith Remake: FAST LAUNCH - Speed up JVM startup =====
-        // Skip bytecode verification for faster class loading (safe for trusted MC code)
+        // Enable tiered compilation for fast startup AND peak runtime performance.
+        // NOTE: Do NOT add TieredStopAtLevel=1 — it disables the C2 optimizing
+        // compiler, causing 5-10x slower hot code execution (1-3 FPS in-game).
         userArgs.add("-XX:+TieredCompilation");
-        userArgs.add("-XX:TieredStopAtLevel=1");
-        // Faster JIT warmup - compile hot methods sooner
-        userArgs.add("-XX:CompileThreshold=1000");
         // Reduce class metadata overhead
         userArgs.add("-XX:+UseCompressedOops");
         // Faster startup with shared class data (CDS)
