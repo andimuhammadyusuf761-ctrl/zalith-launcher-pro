@@ -147,6 +147,31 @@ public class MainActivity extends BaseActivity implements ControlButtonMenuListe
         // 防止系统息屏
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
+        // ===== Zalith Remake: Force Maximum FPS =====
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+            // Request the display mode with highest refresh rate (up to 240Hz)
+            android.view.Display display = getWindowManager().getDefaultDisplay();
+            android.view.Display.Mode[] modes = display.getSupportedModes();
+            android.view.Display.Mode bestMode = null;
+            float maxRefresh = 0;
+            for (android.view.Display.Mode mode : modes) {
+                if (mode.getRefreshRate() > maxRefresh) {
+                    maxRefresh = mode.getRefreshRate();
+                    bestMode = mode;
+                }
+            }
+            if (bestMode != null) {
+                WindowManager.LayoutParams params = window.getAttributes();
+                params.preferredDisplayModeId = bestMode.getModeId();
+                window.setAttributes(params);
+                com.movtery.zalithlauncher.feature.log.Logging.i("FPSBoost",
+                    "Requested max refresh rate: " + maxRefresh + "Hz (mode " + bestMode.getModeId() + ")");
+            }
+        }
+        // Hardware acceleration for max rendering performance
+        window.addFlags(WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED);
+        // ===== End Zalith Remake Force Max FPS =====
+
         ControlLayout controlLayout = binding.mainControlLayout;
         mControlSettingsBinding = ViewControlMenuBinding.inflate(getLayoutInflater());
         new ControlMenu(this, this, mControlSettingsBinding, controlLayout, false);

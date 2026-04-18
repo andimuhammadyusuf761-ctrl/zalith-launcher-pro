@@ -223,6 +223,23 @@ public final class JREUtils {
         envMap.put("AWTSTUB_HEIGHT", Integer.toString(CallbackBridge.windowHeight > 0 ? CallbackBridge.windowHeight : CallbackBridge.physicalHeight));
         envMap.put("MOD_ANDROID_RUNTIME", PathManager.DIR_RUNTIME_MOD != null ? PathManager.DIR_RUNTIME_MOD.getAbsolutePath() : "");
 
+        // ===== Zalith Remake: Fix JVM environment warnings =====
+        // Fix: "Unable to determine desktop session type" warning
+        envMap.put("XDG_SESSION_TYPE", "wayland");
+        // Fix: Graphics adapter detection on Android
+        envMap.put("MESA_LOADER_DRIVER_OVERRIDE", "zink");
+        // Fix: Provide display env for X11/Wayland compatibility
+        envMap.put("DISPLAY", ":0");
+        envMap.put("WAYLAND_DISPLAY", "wayland-0");
+        // Fix: Suppress RandomGeneratorFactory warnings (mod compatibility)
+        envMap.put("JAVA_TOOL_OPTIONS", "");
+        // Force disable VSync for maximum FPS
+        envMap.put("vblank_mode", "0");
+        envMap.put("__GL_SYNC_TO_VBLANK", "0");
+        // Force high FPS target
+        envMap.put("POJAV_FORCE_VSYNC_OFF", "1");
+        // ===== End Zalith Remake env fixes =====
+
         if (AllSettings.getDumpShaders().getValue())
             envMap.put("LIBGL_VGPU_DUMP", "1");
         if (AllSettings.getZinkPreferSystemDriver().getValue())

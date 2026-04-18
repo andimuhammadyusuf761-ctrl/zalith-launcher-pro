@@ -222,6 +222,15 @@ class LaunchGame {
         ) {
             checkMemory(activity)
 
+            // ===== Zalith Remake: Pre-launch anti-lag optimization =====
+            RendererAutoOptimizer.preLaunchOptimize()
+            val boostProfile = FPSBoostConfig.getBoostProfile(minecraftVersion.getVersionName())
+            Logger.appendToLog("FPS Boost: Using profile '${boostProfile.name}' - ${boostProfile.description}")
+            // Log renderer recommendation
+            val rendererRec = RendererAutoOptimizer.getRecommendedRenderer(activity)
+            Logger.appendToLog("Renderer Optimizer: Recommended '${rendererRec.rendererName}' (${rendererRec.reason}) - Est. gain: ${rendererRec.estimatedFpsGain}")
+            // ===== End Zalith Remake =====
+
             val runtime = MultiRTUtils.forceReread(javaRuntime)
 
             val versionInfo = Tools.getVersionInfo(minecraftVersion)
