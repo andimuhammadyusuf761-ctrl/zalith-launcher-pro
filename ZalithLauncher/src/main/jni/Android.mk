@@ -95,6 +95,16 @@ LOCAL_SRC_FILES := xawt_fake.c
 include $(BUILD_SHARED_LIBRARY)
 
 
+# Zalith Remake: ImGUI ARM64 stub library
+# Provides no-op JNI stubs for imgui-java so mods using ImGUI don't crash on ARM64
+LOCAL_PATH := $(HERE_PATH)
+include $(CLEAR_VARS)
+LOCAL_MODULE := imgui-java64
+LOCAL_LDLIBS := -llog
+LOCAL_SRC_FILES := imgui_stub.c
+include $(BUILD_SHARED_LIBRARY)
+
+
 # delete fake libs after linked
 $(info $(shell (rm $(HERE_PATH)/../jniLibs/*/libawt_headless.so)))
 

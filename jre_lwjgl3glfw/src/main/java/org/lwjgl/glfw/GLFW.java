@@ -1478,6 +1478,25 @@ public class GLFW
         nglfwGetCursorPosA(window, xpos, ypos);
     }
 
+    /**
+     * Zalith Remake: glfwGetProcAddress stub for ImGUI compatibility.
+     * ImGUI's GLFW backend calls this to get OpenGL function pointers.
+     * Returns 0 (NULL) which tells ImGUI to fall back gracefully.
+     */
+    public static long glfwGetProcAddress(@NativeType("char const *") CharSequence procname) {
+        // On Android, GL functions are resolved through EGL, not GLFW
+        // Return 0 to indicate the function lookup should use EGL path
+        return 0;
+    }
+
+    public static long glfwGetProcAddress(@NativeType("char const *") ByteBuffer procname) {
+        return 0;
+    }
+
+    public static long nglfwGetProcAddress(long procname) {
+        return 0;
+    }
+
     @NativeType("int")
     public static boolean glfwExtensionSupported(@NativeType("char const *") CharSequence ext) {
         //return Arrays.stream(glGetString(GL_EXTENSIONS).split(" ")).anyMatch(ext::equals);

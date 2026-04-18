@@ -377,6 +377,13 @@ public final class JREUtils {
     private static void initGraphicAndSoundEngine(boolean renderer) {
         dlopen(DIR_NATIVE_LIB + "/libopenal.so");
 
+        // ===== Zalith Remake: Preload ImGUI ARM64 stub =====
+        // This MUST happen before any mod tries to load libimgui-java64.so
+        // Our stub provides no-op JNI implementations so mods using ImGUI
+        // (like ChainLibs) don't crash with UnsatisfiedLinkError on ARM64
+        preloadImGuiStub();
+        // ===== End ImGUI preload =====
+
         if (!renderer) return;
 
         String rendererLib = loadGraphicsLibrary();
@@ -388,6 +395,46 @@ public final class JREUtils {
 
         if (!dlopen(rendererLib) && !dlopen(findInLdLibPath(rendererLib))) {
             Logging.e("RENDER_LIBRARY", "Failed to load renderer " + rendererLib);
+        }
+    }
+
+    /**
+     * Zalith Remake: Preload ImGUI ARM64 stub library.
+     * Mods like ChainLibs bundle x86_64 imgui native libs that crash on ARM64.
+     * By preloading our ARM64 stub (libimgui-java64.so), when the mod calls
+     * System.load() with the extracted x86_64 .so, it will fail but the JNI
+     * symbols are already registered from our stub, preventing the crash.
+     *
+     * We also set the imgui.library.path system property to point to our
+     * native lib directory, so imgui-java loads our ARM64 stub instead of
+     * extracting and loading the bundled x86_64 one.
+     */
+    private static void preloadImGuiStub() {
+        try {
+            String imguiStubPath = DIR_NATIVE_LIB + "/libimgui-java64.so";
+            File imguiStub = new File(imguiStubPath);
+            if (imguiStub.exists()) {
+                // Set the imgui library path property BEFORE any mod initializes
+                // This tells imgui-java to load from our path instead of extracting its bundled x86_64 lib
+                System.setProperty("imgui.library.path", DIR_NATIVE_LIB);
+                System.setProperty("imgui.library.name", "imgui-java64");
+
+                if (dlopen(imguiStubPath)) {
+                    Logging.i("ImGuiCompat", "ImGUI ARM64 stub preloaded successfully from: " + imguiStubPath);
+                } else {
+                    Logging.w("ImGuiCompat", "Failed to dlopen ImGUI stub, trying System.loadLibrary");
+                    try {
+                        System.loadLibrary("imgui-java64");
+                        Logging.i("ImGuiCompat", "ImGUI ARM64 stub loaded via System.loadLibrary");
+                    } catch (UnsatisfiedLinkError e) {
+                        Logging.w("ImGuiCompat", "ImGUI stub not available: " + e.getMessage());
+                    }
+                }
+            } else {
+                Logging.i("ImGuiCompat", "ImGUI stub not found at " + imguiStubPath + " - ImGUI mods may not work");
+            }
+        } catch (Exception e) {
+            Logging.w("ImGuiCompat", "Error preloading ImGUI stub: " + e.getMessage());
         }
     }
 
