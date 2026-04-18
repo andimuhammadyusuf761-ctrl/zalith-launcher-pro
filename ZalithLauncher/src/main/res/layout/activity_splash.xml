@@ -4,11 +4,23 @@
     android:layout_height="match_parent"
     android:background="@color/background_app">
 
+    <!-- Ambient glow effect top-left -->
+    <ImageView
+        android:layout_width="250dp"
+        android:layout_height="150dp"
+        android:src="@drawable/bg_glow_accent"
+        android:alpha="0.35"
+        android:scaleType="fitXY"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <!-- 3D Gradient Top Bar -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/title_layout"
         android:layout_width="match_parent"
         android:layout_height="@dimen/_35sdp"
-        android:background="@color/background_menu_top"
+        android:background="@drawable/bg_gradient_3d_top_bar"
+        android:elevation="6dp"
         app:layout_constraintTop_toTopOf="parent">
 
         <com.movtery.zalithlauncher.ui.view.AnimTextView
@@ -20,6 +32,7 @@
             android:textColor="@color/menu_bar_text"
             android:textSize="@dimen/_16ssp"
             android:textStyle="bold"
+            android:letterSpacing="0.03"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -32,6 +45,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/title_layout">
 
+        <!-- 3D Glass Card for RecyclerView -->
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycler_view"
             android:layout_width="0dp"
@@ -39,9 +53,10 @@
             android:layout_marginEnd="@dimen/_8sdp"
             android:layout_marginStart="@dimen/_12sdp"
             android:layout_marginVertical="@dimen/_12sdp"
-            android:background="@drawable/background_card"
-            android:paddingHorizontal="@dimen/_8sdp"
-            android:paddingVertical="@dimen/_4sdp"
+            android:background="@drawable/bg_3d_settings_card"
+            android:elevation="4dp"
+            android:paddingHorizontal="@dimen/_10sdp"
+            android:paddingVertical="@dimen/_6sdp"
             app:layout_constraintEnd_toStartOf="@+id/operate_layout"
             app:layout_constraintHorizontal_weight="6.5"
             app:layout_constraintStart_toStartOf="parent" />
@@ -75,22 +90,41 @@
                 app:layout_constraintStart_toEndOf="@+id/shadowView2"
                 app:layout_constraintTop_toTopOf="parent">
 
+                <!-- Ambient glow in operate panel -->
+                <ImageView
+                    android:layout_width="150dp"
+                    android:layout_height="150dp"
+                    android:src="@drawable/bg_glow_accent"
+                    android:alpha="0.2"
+                    android:scaleType="fitXY"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent" />
+
                 <TextView
                     android:id="@+id/splash_text"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/_12sdp"
+                    android:layout_margin="@dimen/_14sdp"
                     android:text="@string/splash_screen_desc"
+                    android:lineSpacingMultiplier="1.2"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent" />
 
+                <!-- 3D Start Button -->
                 <com.movtery.zalithlauncher.ui.view.AnimButton
                     android:id="@+id/start_button"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="@dimen/_8sdp"
-                    android:layout_marginBottom="@dimen/_8sdp"
+                    android:layout_marginHorizontal="@dimen/_10sdp"
+                    android:layout_marginBottom="@dimen/_10sdp"
+                    android:background="@drawable/bg_3d_play_button"
+                    android:textColor="#FFFFFF"
+                    android:textStyle="bold"
+                    android:textSize="@dimen/_13ssp"
+                    android:letterSpacing="0.04"
+                    android:paddingVertical="@dimen/_8sdp"
+                    android:elevation="6dp"
                     android:text="@string/splash_screen_apply"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
