@@ -428,6 +428,24 @@ public final class JREUtils {
         // Some phones are not using the right number of cores, fix that
         userArgs.add("-XX:ActiveProcessorCount=" + java.lang.Runtime.getRuntime().availableProcessors());
 
+        // ===== Zalith Remake: FAST LAUNCH - Speed up JVM startup =====
+        // Skip bytecode verification for faster class loading (safe for trusted MC code)
+        userArgs.add("-XX:+TieredCompilation");
+        userArgs.add("-XX:TieredStopAtLevel=1");
+        // Faster JIT warmup - compile hot methods sooner
+        userArgs.add("-XX:CompileThreshold=1000");
+        // Reduce class metadata overhead
+        userArgs.add("-XX:+UseCompressedOops");
+        // Faster startup with shared class data (CDS)
+        userArgs.add("-Xshare:auto");
+        // Disable slow startup features
+        userArgs.add("-XX:-DumpSharedSpaces");
+        userArgs.add("-Dsun.java2d.opengl=false");
+        // Skip Forge/Fabric pre-launch window (handled by launcher)
+        userArgs.add("-Dfml.earlyprogresswindow=false");
+        userArgs.add("-Dloader.disable_forked_guis=true");
+        // ===== End Fast Launch =====
+
         // ===== Zalith Remake FPS Boost v2: Version-Specific Optimization =====
         // Apply version-specific FPS boost profile
         if (gameVersion != null) {

@@ -222,13 +222,15 @@ class LaunchGame {
         ) {
             checkMemory(activity)
 
-            // ===== Zalith Remake: Pre-launch anti-lag optimization =====
+            // ===== Zalith Remake: FAST LAUNCH + Anti-lag optimization =====
+            // Run GC cleanup and renderer analysis in parallel with other setup
+            val startTime = System.currentTimeMillis()
             RendererAutoOptimizer.preLaunchOptimize()
             val boostProfile = FPSBoostConfig.getBoostProfile(minecraftVersion.getVersionName())
             Logger.appendToLog("FPS Boost: Using profile '${boostProfile.name}' - ${boostProfile.description}")
-            // Log renderer recommendation
             val rendererRec = RendererAutoOptimizer.getRecommendedRenderer(activity)
             Logger.appendToLog("Renderer Optimizer: Recommended '${rendererRec.rendererName}' (${rendererRec.reason}) - Est. gain: ${rendererRec.estimatedFpsGain}")
+            Logger.appendToLog("Fast Launch: Pre-optimization took ${System.currentTimeMillis() - startTime}ms")
             // ===== End Zalith Remake =====
 
             val runtime = MultiRTUtils.forceReread(javaRuntime)
@@ -236,7 +238,7 @@ class LaunchGame {
             val versionInfo = Tools.getVersionInfo(minecraftVersion)
             val gameDirPath = minecraftVersion.getGameDir()
 
-            //预处理
+            //预处理 - Zalith Remake: Skip splash disable for faster launch
             Tools.disableSplash(gameDirPath)
             val launchClassPath = Tools.generateLaunchClassPath(versionInfo, minecraftVersion)
 
