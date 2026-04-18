@@ -486,7 +486,7 @@ public final class JREUtils {
         // Faster startup with shared class data (CDS)
         userArgs.add("-Xshare:auto");
         // Disable slow startup features
-        userArgs.add("-XX:-DumpSharedSpaces");
+        // Note: DumpSharedSpaces removed in Java 19+ (don't add it back)
         userArgs.add("-Dsun.java2d.opengl=false");
         // Skip Forge/Fabric pre-launch window (handled by launcher)
         userArgs.add("-Dfml.earlyprogresswindow=false");

@@ -77,7 +77,7 @@ object FPSBoostConfig {
                 "-XX:MaxTenuringThreshold=1",
                 "-XX:+UseCompressedOops",
                 "-XX:+OptimizeStringConcat",
-                "-XX:-UseBiasedLocking",
+                // Note: UseBiasedLocking removed in Java 19+ (don't add it back)
                 "-XX:+AlwaysPreTouch",
                 "-XX:+ParallelRefProcEnabled",
                 "-XX:+DisableExplicitGC",
@@ -125,7 +125,7 @@ object FPSBoostConfig {
                 "-XX:+UseCompressedOops",
                 "-XX:+OptimizeStringConcat",
                 "-XX:+UseStringDeduplication",
-                "-XX:-UseBiasedLocking",
+                // Note: UseBiasedLocking removed in Java 19+ (don't add it back)
                 "-XX:+AlwaysPreTouch",
                 "-XX:+ParallelRefProcEnabled",
                 "-XX:+DisableExplicitGC",
@@ -177,7 +177,7 @@ object FPSBoostConfig {
                 "-XX:+UseCompressedOops",
                 "-XX:+OptimizeStringConcat",
                 "-XX:+UseStringDeduplication",
-                "-XX:-UseBiasedLocking",
+                // Note: UseBiasedLocking removed in Java 19+ (don't add it back)
                 "-XX:+AlwaysPreTouch",
                 "-XX:+ParallelRefProcEnabled",
                 "-XX:+DisableExplicitGC",
@@ -229,7 +229,7 @@ object FPSBoostConfig {
                 "-XX:+UseCompressedOops",
                 "-XX:+OptimizeStringConcat",
                 "-XX:+UseStringDeduplication",
-                "-XX:-UseBiasedLocking",
+                // Note: UseBiasedLocking removed in Java 19+ (don't add it back)
                 "-XX:+AlwaysPreTouch",
                 "-XX:+ParallelRefProcEnabled",
                 "-XX:+DisableExplicitGC",
