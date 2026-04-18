@@ -48,8 +48,6 @@ chmod +x gradlew
 
 - Original: [ZalithLauncher](https://github.com/ZalithLauncher/ZalithLauncher)
 - FPS Boost & GUI Remake by Sittirahmadia
-- Built with assistance from [Raccoon AI](https://raccoonai.tech)
-
 ## License
 
 Licensed under GPL-3.0 - same as the original ZalithLauncher.
