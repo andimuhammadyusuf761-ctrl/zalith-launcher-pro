@@ -95,14 +95,10 @@ LOCAL_SRC_FILES := xawt_fake.c
 include $(BUILD_SHARED_LIBRARY)
 
 
-# Zalith Remake: ImGUI ARM64 stub library
-# Provides no-op JNI stubs for imgui-java so mods using ImGUI don't crash on ARM64
-LOCAL_PATH := $(HERE_PATH)
-include $(CLEAR_VARS)
-LOCAL_MODULE := imgui-java64
-LOCAL_LDLIBS := -llog
-LOCAL_SRC_FILES := imgui_stub.c
-include $(BUILD_SHARED_LIBRARY)
+# Zalith Remake: ImGUI ARM64 support
+# Real imgui-java64 ARM64 library is pre-built and placed in jniLibs/arm64-v8a/
+# Cross-compiled from SpaiR/imgui-java source using Android NDK r25c
+# No-op stub removed - this is a REAL functional imgui native library
 
 
 # delete fake libs after linked
