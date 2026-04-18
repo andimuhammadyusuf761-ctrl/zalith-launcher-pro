@@ -446,6 +446,22 @@ public final class JREUtils {
         userArgs.add("-Dloader.disable_forked_guis=true");
         // ===== End Fast Launch =====
 
+        // ===== Zalith Remake: Mod Compatibility Fixes =====
+        // Fix "Faster Random" mod: Tell it to skip RandomGeneratorFactory check
+        // The Android JVM doesn't implement java.util.random.RandomGeneratorFactory
+        // This property lets the mod know to disable gracefully without warning spam
+        userArgs.add("-Dfasterrandom.disabled=true");
+        // Provide GPU info for OSHI library (fixes "Could not find graphics adapters")
+        // Android GPUs are accessed via EGL, not PCI bus - provide info via properties
+        userArgs.add("-Doshi.os.linux.allowProcSelfExe=false");
+        userArgs.add("-Doshi.architecture.override=" + Architecture.archAsString(Tools.DEVICE_ARCHITECTURE));
+        userArgs.add("-Djava.awt.headless=false");
+        // Suppress LWJGL debug warnings that aren't relevant on Android
+        userArgs.add("-Dorg.lwjgl.util.NoChecks=true");
+        // Fix sodium/embeddium checks
+        userArgs.add("-Dsodium.checks.issue2561=false");
+        // ===== End Mod Compatibility Fixes =====
+
         // ===== Zalith Remake FPS Boost v2: Version-Specific Optimization =====
         // Apply version-specific FPS boost profile
         if (gameVersion != null) {
