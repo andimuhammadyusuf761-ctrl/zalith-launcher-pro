@@ -411,32 +411,23 @@ public final class JREUtils {
         // Some phones are not using the right number of cores, fix that
         userArgs.add("-XX:ActiveProcessorCount=" + java.lang.Runtime.getRuntime().availableProcessors());
 
-        // ===== Zalith Remake FPS Boost: Optimized GC and JIT flags =====
-        // Use G1GC with aggressive tuning for lower pause times and better throughput
-        userArgs.add("-XX:+UseG1GC");
-        userArgs.add("-XX:MaxGCPauseMillis=10");
-        userArgs.add("-XX:G1NewSizePercent=20");
-        userArgs.add("-XX:G1MaxNewSizePercent=60");
-        userArgs.add("-XX:G1HeapRegionSize=8M");
-        userArgs.add("-XX:G1ReservePercent=20");
-        userArgs.add("-XX:G1HeapWastePercent=5");
-        userArgs.add("-XX:G1MixedGCCountTarget=4");
-        userArgs.add("-XX:InitiatingHeapOccupancyPercent=15");
-        userArgs.add("-XX:G1MixedGCLiveThresholdPercent=90");
-        userArgs.add("-XX:G1RSetUpdatingPauseTimePercent=5");
-        userArgs.add("-XX:SurvivorRatio=32");
-        userArgs.add("-XX:+PerfDisableSharedMem");
-        userArgs.add("-XX:MaxTenuringThreshold=1");
-        // Optimize JIT compilation for better runtime performance
-        userArgs.add("-XX:+UseCompressedOops");
-        userArgs.add("-XX:+OptimizeStringConcat");
-        userArgs.add("-XX:+UseStringDeduplication");
-        // Reduce GC overhead and improve allocation speed
-        userArgs.add("-XX:-UseBiasedLocking");
-        userArgs.add("-XX:+AlwaysPreTouch");
-        userArgs.add("-XX:+ParallelRefProcEnabled");
-        userArgs.add("-XX:+DisableExplicitGC");
-        // ===== End Zalith Remake FPS Boost =====
+        // ===== Zalith Remake FPS Boost v2: Version-Specific Optimization =====
+        // Apply version-specific FPS boost profile
+        if (gameVersion != null) {
+            String versionName = gameVersion.getVersionName();
+            com.movtery.zalithlauncher.launch.FPSBoostConfig.BoostProfile profile =
+                com.movtery.zalithlauncher.launch.FPSBoostConfig.INSTANCE.getBoostProfile(versionName);
+            Logger.appendToLog("FPS Boost: Applying profile '" + profile.getName() + "' for " + versionName);
+            for (String arg : profile.getJvmArgs()) {
+                userArgs.add(arg);
+            }
+        } else {
+            // Fallback: apply common flags
+            for (String arg : com.movtery.zalithlauncher.launch.FPSBoostConfig.INSTANCE.getCommonJvmFlags()) {
+                userArgs.add(arg);
+            }
+        }
+        // ===== End Zalith Remake FPS Boost v2 =====
 
         userArgs.addAll(JVMArgs);
         activity.runOnUiThread(() -> Toast.makeText(activity, activity.getString(R.string.autoram_info_msg, AllSettings.getRamAllocation().getValue().getValue()), Toast.LENGTH_SHORT).show());

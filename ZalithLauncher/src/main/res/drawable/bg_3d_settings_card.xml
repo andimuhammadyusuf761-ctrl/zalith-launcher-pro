@@ -1,26 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
-    <!-- 3D shadow -->
+    <!-- Outer shadow for depth -->
     <item android:top="2dp" android:left="1dp">
         <shape android:shape="rectangle">
-            <corners android:radius="@dimen/_10sdp" />
-            <solid android:color="#12000000" />
+            <corners android:radius="@dimen/_14sdp" />
+            <solid android:color="#10000000" />
         </shape>
     </item>
-    <!-- Main surface -->
+    <!-- Main card surface -->
     <item android:bottom="2dp" android:right="1dp">
         <shape android:shape="rectangle">
-            <corners android:radius="@dimen/_10sdp" />
-            <solid android:color="@color/background_item" />
+            <corners android:radius="@dimen/_14sdp" />
+            <solid android:color="@color/menu_overlay" />
             <stroke
                 android:width="0.5dp"
                 android:color="#12FFFFFF" />
         </shape>
     </item>
-    <!-- Top highlight for depth -->
+    <!-- Inner top highlight -->
     <item android:bottom="2dp" android:right="1dp">
         <shape android:shape="rectangle">
-            <corners android:radius="@dimen/_10sdp" />
+            <corners android:radius="@dimen/_14sdp" />
             <gradient
                 android:startColor="#10FFFFFF"
                 android:endColor="#00000000"

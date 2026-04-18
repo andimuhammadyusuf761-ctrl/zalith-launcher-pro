@@ -10,12 +10,23 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 
+    <!-- Ambient glow effect behind top bar -->
+    <ImageView
+        android:layout_width="300dp"
+        android:layout_height="100dp"
+        android:src="@drawable/bg_glow_accent"
+        android:alpha="0.4"
+        android:scaleType="fitXY"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/top_layout"
         android:layout_width="match_parent"
         android:layout_height="@dimen/_40sdp"
-        android:background="@drawable/background_top_bar"
-        android:elevation="4dp"
+        android:background="@drawable/bg_gradient_3d_top_bar"
+        android:elevation="6dp"
         app:layout_constraintTop_toTopOf="parent">
 
         <com.movtery.zalithlauncher.ui.view.AnimTextView
@@ -27,6 +38,7 @@
             android:textColor="@color/menu_bar_text"
             android:textSize="@dimen/_16ssp"
             android:textStyle="bold"
+            android:letterSpacing="0.03"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -92,7 +104,6 @@
         android:id="@+id/progress_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-
         android:layout_marginEnd="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
@@ -102,8 +113,9 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_margin="@dimen/_12sdp"
-        android:background="@drawable/background_card"
-        android:padding="@dimen/_12sdp"
+        android:background="@drawable/bg_3d_settings_card"
+        android:padding="@dimen/_14sdp"
+        android:elevation="8dp"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@id/notice_guideline"
@@ -181,6 +193,5 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_hair" />
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>
