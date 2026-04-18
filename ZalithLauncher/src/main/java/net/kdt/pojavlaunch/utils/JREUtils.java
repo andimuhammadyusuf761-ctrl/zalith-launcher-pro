@@ -418,7 +418,7 @@ public final class JREUtils {
 
             if (imguiArm64.exists()) {
                 System.setProperty("imgui.library.path", DIR_NATIVE_LIB);
-                System.setProperty("imgui.library.name", "imgui-javaarm64");
+                System.setProperty("imgui.library.name", "libimgui-javaarm64.so");
 
                 if (dlopen(imguiArm64Path)) {
                     Logging.i("ImGuiCompat", "ImGUI ARM64 native lib preloaded successfully from: " + imguiArm64Path);
@@ -524,7 +524,7 @@ public final class JREUtils {
         // CRITICAL: This MUST be a -D JVM arg, not System.setProperty(),
         // because Minecraft runs in a separate JRE VM (not the Android ART VM).
         userArgs.add("-Dimgui.library.path=" + DIR_NATIVE_LIB);
-        userArgs.add("-Dimgui.library.name=imgui-javaarm64");
+        userArgs.add("-Dimgui.library.name=libimgui-javaarm64.so");
         // ===== End Mod Compatibility Fixes =====
 
         // ===== Zalith Remake FPS Boost v2: Version-Specific Optimization =====
