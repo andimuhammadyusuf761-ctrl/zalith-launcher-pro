@@ -399,54 +399,31 @@ public final class JREUtils {
     }
 
     /**
-     * Zalith Remake: Preload ImGUI ARM64 native library.
-     * Mods like ChainLibs bundle x86_64 imgui native libs that crash on ARM64.
-     * By preloading our ARM64 build, when the mod's imgui-java binding resolves
-     * JNI native methods, it finds our symbols already loaded.
+     * Zalith Remake: ImGUI ARM64 compatibility.
      *
-     * IMPORTANT: ChainLibs uses imgui-java v1.86.x which declares native methods
-     * WITHOUT the 'n' prefix (e.g. setIniFilename -> Java_imgui_ImGuiIO_setIniFilename).
-     * libimgui-java64.so is built from imgui-java v1.87+ which uses 'n' prefix
-     * (e.g. nSetIniFilename -> Java_imgui_ImGuiIO_nSetIniFilename) causing UnsatisfiedLinkError.
-     * libimgui-javaarm64.so is the correct build matching the old API.
+     * DO NOT dlopen/preload the imgui native library here in the Android ART VM!
+     * The Minecraft JRE runs in the same process but as a separate VM instance.
+     * If we dlopen() the lib here, the C++ static constructors (INIT_ARRAY) run
+     * in ART's context. When the JRE's System.load() later gets the cached handle,
+     * INIT_ARRAY does NOT re-run, leaving the JRE with stale C++ global state
+     * initialized by ART. This causes native SIGSEGV crashes with no Java trace.
+     *
+     * Instead, we ONLY pass -Dimgui.library.path and -Dimgui.library.name as JVM
+     * args (see launchJavaVM). The mod's ImGui static initializer reads these
+     * properties and calls System.load() cleanly within the JRE context.
+     *
+     * ChainLibs uses imgui-java v1.86.x (old API without 'n' prefix on JNI symbols).
+     * libimgui-javaarm64.so is the matching v1.86 ARM64 Android NDK build.
      */
     private static void preloadImGuiStub() {
-        try {
-            // Primary: load the ARM64 lib that matches the old imgui-java API (no 'n' prefix)
-            String imguiArm64Path = DIR_NATIVE_LIB + "/libimgui-javaarm64.so";
-            File imguiArm64 = new File(imguiArm64Path);
-
-            if (imguiArm64.exists()) {
-                System.setProperty("imgui.library.path", DIR_NATIVE_LIB);
-                System.setProperty("imgui.library.name", "libimgui-javaarm64.so");
-
-                if (dlopen(imguiArm64Path)) {
-                    Logging.i("ImGuiCompat", "ImGUI ARM64 native lib preloaded successfully from: " + imguiArm64Path);
-                } else {
-                    Logging.w("ImGuiCompat", "Failed to dlopen ImGUI ARM64 lib, trying System.loadLibrary");
-                    try {
-                        System.loadLibrary("imgui-javaarm64");
-                        Logging.i("ImGuiCompat", "ImGUI ARM64 native lib loaded via System.loadLibrary");
-                    } catch (UnsatisfiedLinkError e) {
-                        Logging.w("ImGuiCompat", "ImGUI ARM64 lib not available: " + e.getMessage());
-                    }
-                }
-            } else {
-                // Fallback: try the newer API lib (works with imgui-java v1.87+ mods)
-                String imguiFallbackPath = DIR_NATIVE_LIB + "/libimgui-java64.so";
-                File imguiFallback = new File(imguiFallbackPath);
-                if (imguiFallback.exists()) {
-                    System.setProperty("imgui.library.path", DIR_NATIVE_LIB);
-                    System.setProperty("imgui.library.name", "imgui-java64");
-                    if (dlopen(imguiFallbackPath)) {
-                        Logging.i("ImGuiCompat", "ImGUI fallback (new API) preloaded from: " + imguiFallbackPath);
-                    }
-                } else {
-                    Logging.i("ImGuiCompat", "No ImGUI native libs found - ImGUI mods may not work");
-                }
-            }
-        } catch (Exception e) {
-            Logging.w("ImGuiCompat", "Error preloading ImGUI lib: " + e.getMessage());
+        // No-op: library loading is handled entirely by the JRE via -D JVM flags.
+        // See launchJavaVM() for -Dimgui.library.path and -Dimgui.library.name.
+        String imguiArm64Path = DIR_NATIVE_LIB + "/libimgui-javaarm64.so";
+        if (new File(imguiArm64Path).exists()) {
+            Logging.i("ImGuiCompat", "ImGUI ARM64 lib found at: " + imguiArm64Path
+                + " (will be loaded by JRE via -Dimgui.library.* flags, NOT preloaded in ART)");
+        } else {
+            Logging.i("ImGuiCompat", "No ImGUI ARM64 lib found - ImGUI mods may not work on ARM64");
         }
     }
 
