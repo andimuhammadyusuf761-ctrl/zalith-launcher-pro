@@ -29,8 +29,16 @@ public class GLFW
     /** The major version number of the GLFW library. This is incremented when the API is changed in non-compatible ways. */
     public static final int GLFW_VERSION_MAJOR = 3;
 
-    /** The minor version number of the GLFW library. This is incremented when features are added to the API but it remains backward-compatible. */
-    public static final int GLFW_VERSION_MINOR = 4;
+    /**
+     * The minor version number of the GLFW library.
+     * NOTE: Set to 2 (GLFW 3.2.0) intentionally for ImGUI compatibility.
+     * ImGUI's GLFW backend enables wantUpdateMonitors when version >= 3.3.0,
+     * which calls updateMonitors() that interacts with platform viewports and
+     * crashes on Android's stubbed GLFW environment (native SIGSEGV).
+     * GLFW 3.2.0 disables this code path while keeping all features MC needs.
+     * The GLFW stub still implements all 3.3+ APIs — only the version number changes.
+     */
+    public static final int GLFW_VERSION_MINOR = 2;
 
     /** The revision number of the GLFW library. This is incremented when a bug fix release is made that does not contain any API changes. */
     public static final int GLFW_VERSION_REVISION = 0;
@@ -901,8 +909,8 @@ public class GLFW
             checkSafe(ypos, 1);
         }
 
-        xpos.put(0);
-        ypos.put(0);
+        xpos.put(0, 0);
+        ypos.put(0, 0);
     }
 
     public static void glfwGetMonitorWorkarea(@NativeType("GLFWmonitor *") long monitor, @Nullable @NativeType("int *") IntBuffer xpos, @Nullable @NativeType("int *") IntBuffer ypos, @Nullable @NativeType("int *") IntBuffer width, @Nullable @NativeType("int *") IntBuffer height) {
@@ -913,10 +921,10 @@ public class GLFW
             checkSafe(height, 1);
         }
 
-        xpos.put(0);
-        ypos.put(0);
-        width.put(mGLFWWindowWidth);
-        height.put(mGLFWWindowHeight);
+        xpos.put(0, 0);
+        ypos.put(0, 0);
+        width.put(0, mGLFWWindowWidth);
+        height.put(0, mGLFWWindowHeight);
     }
 
     @NativeType("GLFWmonitor *")
@@ -944,9 +952,10 @@ public class GLFW
             checkSafe(rev, 1);
         }
 
-        major.put(GLFW_VERSION_MAJOR);
-        minor.put(GLFW_VERSION_MINOR);
-        rev.put(GLFW_VERSION_REVISION);
+        // Use absolute put to avoid advancing buffer position
+        major.put(0, GLFW_VERSION_MAJOR);
+        minor.put(0, GLFW_VERSION_MINOR);
+        rev.put(0, GLFW_VERSION_REVISION);
     }
 
     public static String glfwGetVersionString() {

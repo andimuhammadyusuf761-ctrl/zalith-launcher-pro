@@ -85,17 +85,7 @@ object FPSBoostConfig {
                 "-Dfml.ignoreInvalidMinecraftCertificates=true",
                 "-Dfml.ignorePatchDiscrepancies=true"
             ),
-            envVars = mapOf(
-                "LIBGL_USEVBO" to "1",
-                "LIBGL_GL" to "21",
-                "LIBGL_SHRINK" to "0",
-                "LIBGL_FASTMATH" to "1",
-                "LIBGL_BATCH" to "1",
-                "LIBGL_NOVAOCACHE" to "0",
-                "LIBGL_NOINTOVLHACK" to "1",
-                "LIBGL_NORMALIZE" to "1",
-                "LIBGL_NOERROR" to "1"
-            )
+            envVars = emptyMap()
         )
     }
 
@@ -133,21 +123,7 @@ object FPSBoostConfig {
                 "-Dfml.ignoreInvalidMinecraftCertificates=true",
                 "-Dfml.ignorePatchDiscrepancies=true"
             ),
-            envVars = mapOf(
-                "LIBGL_USEVBO" to "1",
-                "LIBGL_GL" to "21",
-                "LIBGL_SHRINK" to "0",
-                "LIBGL_FASTMATH" to "1",
-                "LIBGL_BATCH" to "1",
-                "LIBGL_NOVAOCACHE" to "0",
-                "LIBGL_NOINTOVLHACK" to "1",
-                "LIBGL_NORMALIZE" to "1",
-                "LIBGL_NOERROR" to "1",
-                "MESA_GL_VERSION_OVERRIDE" to "4.5",
-                "MESA_GLSL_VERSION_OVERRIDE" to "450",
-                "MESA_GLSL_CACHE_DISABLE" to "false",
-                "MESA_NO_ERROR" to "1"
-            )
+            envVars = emptyMap()
         )
     }
 
@@ -184,22 +160,7 @@ object FPSBoostConfig {
                 "-XX:ParallelGCThreads=4",
                 "-XX:ConcGCThreads=2"
             ),
-            envVars = mapOf(
-                "LIBGL_USEVBO" to "1",
-                "LIBGL_GL" to "21",
-                "LIBGL_SHRINK" to "0",
-                "LIBGL_FASTMATH" to "1",
-                "LIBGL_BATCH" to "1",
-                "LIBGL_NOVAOCACHE" to "0",
-                "LIBGL_NOINTOVLHACK" to "1",
-                "LIBGL_NORMALIZE" to "1",
-                "LIBGL_NOERROR" to "1",
-                "MESA_GL_VERSION_OVERRIDE" to "4.6",
-                "MESA_GLSL_VERSION_OVERRIDE" to "460",
-                "MESA_GLSL_CACHE_DISABLE" to "false",
-                "MESA_NO_ERROR" to "1",
-                "ZINK_DESCRIPTORS" to "lazy"
-            )
+            envVars = emptyMap()
         )
     }
 
@@ -238,22 +199,11 @@ object FPSBoostConfig {
                 "-Djava.net.preferIPv4Stack=true",
                 "-Dnetworkaddress.cache.ttl=60"
             ),
-            envVars = mapOf(
-                "LIBGL_USEVBO" to "1",
-                "LIBGL_GL" to "21",
-                "LIBGL_SHRINK" to "0",
-                "LIBGL_FASTMATH" to "1",
-                "LIBGL_BATCH" to "1",
-                "LIBGL_NOVAOCACHE" to "0",
-                "LIBGL_NOINTOVLHACK" to "1",
-                "LIBGL_NORMALIZE" to "1",
-                "LIBGL_NOERROR" to "1",
-                "MESA_GL_VERSION_OVERRIDE" to "4.6",
-                "MESA_GLSL_VERSION_OVERRIDE" to "460",
-                "MESA_GLSL_CACHE_DISABLE" to "false",
-                "MESA_NO_ERROR" to "1",
-                "ZINK_DESCRIPTORS" to "lazy"
-            )
+            // NOTE: LIBGL_* and MESA_* env vars are NOT set here because they
+            // conflict with renderer plugins (MobileGlues, gl4es, Zink).
+            // The renderer plugin system handles GL/driver env vars correctly.
+            // Setting them here would override plugin settings and cause crashes.
+            envVars = emptyMap()
         )
     }
 
@@ -284,7 +234,7 @@ object FPSBoostConfig {
             "-XX:+UseCompressedOops",
             "-XX:+OptimizeStringConcat",
             "-XX:+UseStringDeduplication",
-            "-XX:-UseBiasedLocking",
+            // Note: UseBiasedLocking removed in Java 19+ (don't add it back)
             "-XX:+AlwaysPreTouch",
             "-XX:+ParallelRefProcEnabled",
             "-XX:+DisableExplicitGC"
