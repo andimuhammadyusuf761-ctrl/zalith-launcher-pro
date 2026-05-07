@@ -15,6 +15,7 @@ import com.movtery.zalithlauncher.databinding.SettingsFragmentControlBinding
 import com.movtery.zalithlauncher.setting.AllSettings
 import com.movtery.zalithlauncher.ui.fragment.CustomMouseFragment
 import com.movtery.zalithlauncher.ui.fragment.FragmentWithAnim
+import com.movtery.zalithlauncher.ui.fragment.MacroManagerFragment
 import com.movtery.zalithlauncher.ui.fragment.settings.wrapper.BaseSettingsWrapper
 import com.movtery.zalithlauncher.ui.fragment.settings.wrapper.SeekBarSettingsWrapper
 import com.movtery.zalithlauncher.ui.fragment.settings.wrapper.SwitchSettingsWrapper
@@ -122,6 +123,20 @@ class ControlSettingsFragment() : AbstractSettingsFragment(R.layout.settings_fra
                     this,
                     CustomMouseFragment::class.java,
                     CustomMouseFragment.TAG,
+                    null
+                )
+            }
+        }
+
+        BaseSettingsWrapper(
+            context,
+            binding.macrosLayout
+        ) {
+            parentFragment?.apply {
+                ZHTools.swapFragmentWithAnim(
+                    this,
+                    MacroManagerFragment::class.java,
+                    MacroManagerFragment.TAG,
                     null
                 )
             }

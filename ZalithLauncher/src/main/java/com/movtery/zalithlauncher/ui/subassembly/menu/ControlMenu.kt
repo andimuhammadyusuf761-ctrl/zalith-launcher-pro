@@ -6,8 +6,11 @@ import android.provider.DocumentsContract
 import android.view.View
 import android.widget.CompoundButton
 import android.widget.SeekBar
+import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import com.movtery.zalithlauncher.R
 import com.movtery.zalithlauncher.databinding.ViewControlMenuBinding
+import com.movtery.zalithlauncher.feature.macro.MacroStore
 import com.movtery.zalithlauncher.setting.AllSettings
 import net.kdt.pojavlaunch.Tools
 import net.kdt.pojavlaunch.customcontrols.ControlData
@@ -33,6 +36,8 @@ class ControlMenu(
             addButton.setOnClickListener(listener)
             addDrawer.setOnClickListener(listener)
             addJoystick.setOnClickListener(listener)
+            addMacro.setOnClickListener(listener)
+            manageMacros.setOnClickListener(listener)
 
             load.setOnClickListener(listener)
             save.setOnClickListener(listener)
@@ -57,6 +62,14 @@ class ControlMenu(
                 addButton -> controlLayout.addControlButton(ControlData(activity.getString(R.string.controls_add_control_button)))
                 addDrawer -> controlLayout.addDrawer(ControlDrawerData())
                 addJoystick -> controlLayout.addJoystickButton(ControlJoystickData())
+                addMacro -> showMacroPicker()
+                manageMacros -> {
+                    Toast.makeText(
+                        activity,
+                        activity.getString(R.string.macro_manage_in_settings_hint),
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
 
                 load -> controlLayout.openLoadDialog()
                 save -> controlLayout.openSaveDialog()
@@ -124,5 +137,36 @@ class ControlMenu(
                 else -> {}
             }
         }
+    }
+
+    /**
+     * Show a picker dialog of saved macros. Tapping one drops a macro-bound ControlButton
+     * into the layout; the button's [ControlData.macroId] is set so it triggers via
+     * MacroEngine when pressed in-game.
+     */
+    private fun showMacroPicker() {
+        val macros = MacroStore.load(activity)
+        if (macros.isEmpty()) {
+            AlertDialog.Builder(activity)
+                .setTitle(R.string.customctrl_addbutton_macro)
+                .setMessage(R.string.macro_picker_empty)
+                .setPositiveButton(android.R.string.ok, null)
+                .show()
+            return
+        }
+        val names = macros.map { it.name }.toTypedArray()
+        AlertDialog.Builder(activity)
+            .setTitle(R.string.macro_picker_title)
+            .setItems(names) { _, idx ->
+                val m = macros[idx]
+                val data = ControlData(
+                    "M: " + m.name,
+                    intArrayOf(ControlData.SPECIALBTN_MACRO_RUN)
+                )
+                data.macroId = m.id
+                controlLayout.addControlButton(data)
+            }
+            .setNegativeButton(android.R.string.cancel, null)
+            .show()
     }
 }

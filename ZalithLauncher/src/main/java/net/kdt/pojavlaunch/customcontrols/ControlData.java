@@ -38,6 +38,7 @@ public class ControlData {
     public static final int SPECIALBTN_SCROLLUP = -7;
     public static final int SPECIALBTN_SCROLLDOWN = -8;
     public static final int SPECIALBTN_MENU = -9;
+    public static final int SPECIALBTN_MACRO_RUN = -10;
 
     private static ControlData[] SPECIAL_BUTTONS;
     private static List<String> SPECIAL_BUTTON_NAME_ARRAY;
@@ -70,6 +71,8 @@ public class ControlData {
     public boolean isSwipeable;
     public boolean displayInGame;
     public boolean displayInMenu;
+    /** Aurora macro binding: id of the {@code com.movtery.zalithlauncher.feature.macro.Macro} to run. */
+    public String macroId;
     private float width;         //Dp instead of Px now
     private float height;        //Dp instead of Px now
 
@@ -156,6 +159,7 @@ public class ControlData {
                 controlData.isSwipeable,
                 controlData.passThruEnabled
         );
+        this.macroId = controlData.macroId;
     }
 
     public static ControlData[] getSpecialButtons(Context context) {

@@ -429,8 +429,18 @@ object FPSBoostConfig {
     }
 
     /**
-     * Aurora v3: shared JIT/code-cache/metaspace/security flags applied
+     * Aurora v3 + v5: shared JIT/code-cache/metaspace/security flags applied
      * to every profile via [withCommonAuroraFlags].
+     *
+     * Aurora v5 ("Turbo Pass") additions:
+     * - {@code +UseFastUnorderedTimeStamps}: drops a syscall per
+     *   {@code System.nanoTime()} which the renderer hits in the inner loop.
+     * - {@code GuaranteedSafepointInterval=0}: disables the timer-based
+     *   safepoint poll, removes a periodic ~5ms hitch cycle.
+     * - {@code +DoEscapeAnalysis} / {@code +EliminateLocks}: extra inlining
+     *   wins for the hot Sodium / Indium paths.
+     * - {@code -Dosmesa.YInvert=1} / {@code -Dorg.lwjgl.util.NoChecks=true}:
+     *   skips per-call argument validation in LWJGL once we're stable.
      */
     private fun auroraSharedFlags(): List<String> {
         return listOf(
@@ -439,6 +449,13 @@ object FPSBoostConfig {
             "-XX:InitialCodeCacheSize=64M",
             "-XX:+SegmentedCodeCache",
             "-XX:CompileThreshold=1500",
+            // v5 JIT polish
+            "-XX:+UseFastUnorderedTimeStamps",
+            "-XX:+UnlockDiagnosticVMOptions",
+            "-XX:GuaranteedSafepointInterval=0",
+            "-XX:+DoEscapeAnalysis",
+            "-XX:+EliminateLocks",
+            "-XX:+EliminateAllocations",
             // Metaspace
             "-XX:MetaspaceSize=128M",
             "-XX:MaxMetaspaceSize=384M",
@@ -451,7 +468,9 @@ object FPSBoostConfig {
             "-Dsun.net.client.defaultReadTimeout=30000",
             // Misc Minecraft modlauncher friendliness
             "-Dlog4j2.formatMsgNoLookups=true",
-            "-Dfml.earlyprogresswindow=false"
+            "-Dfml.earlyprogresswindow=false",
+            // v5 LWJGL fast path
+            "-Dorg.lwjgl.util.NoChecks=true"
         )
     }
 

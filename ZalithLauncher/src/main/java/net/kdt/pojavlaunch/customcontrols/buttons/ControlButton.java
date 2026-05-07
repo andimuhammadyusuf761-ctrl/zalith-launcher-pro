@@ -15,6 +15,8 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.movtery.zalithlauncher.R;
+import com.movtery.zalithlauncher.feature.macro.MacroEngine;
+import com.movtery.zalithlauncher.feature.macro.MacroStore;
 import com.movtery.zalithlauncher.setting.AllSettings;
 
 import net.kdt.pojavlaunch.LwjglGlfwKeycode;
@@ -234,6 +236,20 @@ public class ControlButton extends TextView implements ControlInterface {
                 break;
             case ControlData.SPECIALBTN_MENU:
                 mControlLayout.notifyAppMenu();
+                break;
+            case ControlData.SPECIALBTN_MACRO_RUN:
+                if (isDown) {
+                    String id = mProperties.macroId;
+                    if (id != null) {
+                        if (MacroEngine.INSTANCE.isRunning(id)) {
+                            MacroEngine.INSTANCE.stop(id);
+                        } else {
+                            com.movtery.zalithlauncher.feature.macro.Macro m =
+                                    MacroStore.get(getContext(), id);
+                            if (m != null) MacroEngine.INSTANCE.run(m);
+                        }
+                    }
+                }
                 break;
         }
     }
