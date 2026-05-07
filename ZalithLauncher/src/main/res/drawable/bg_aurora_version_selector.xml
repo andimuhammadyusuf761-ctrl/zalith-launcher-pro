@@ -25,8 +25,11 @@
                 android:color="@color/aurora_outline" />
         </shape>
     </item>
-    <!-- Leading violet accent strip -->
-    <item android:bottom="2dp" android:right="98%">
+    <!-- Leading violet accent strip (3dp wide, anchored to the left edge) -->
+    <item
+        android:width="3dp"
+        android:gravity="left|fill_vertical"
+        android:bottom="2dp">
         <shape android:shape="rectangle">
             <corners
                 android:topLeftRadius="@dimen/_12sdp"
