@@ -48,50 +48,50 @@
         app:layout_constraintTop_toBottomOf="@+id/step_label"
         tools:text="delay 30ms" />
 
-    <com.google.android.material.button.MaterialButton
+    <androidx.appcompat.widget.AppCompatImageButton
         android:id="@+id/step_up"
-        style="@style/Widget.Material3.Button.IconButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="@dimen/_28sdp"
+        android:layout_height="@dimen/_28sdp"
+        android:background="?android:attr/selectableItemBackgroundBorderless"
         android:contentDescription="@string/macro_move_up"
-        app:icon="@drawable/ic_aurora_arrow_up"
-        app:iconSize="18dp"
+        android:padding="@dimen/_4sdp"
+        android:src="@drawable/ic_aurora_arrow_up"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/step_down"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <com.google.android.material.button.MaterialButton
+    <androidx.appcompat.widget.AppCompatImageButton
         android:id="@+id/step_down"
-        style="@style/Widget.Material3.Button.IconButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="@dimen/_28sdp"
+        android:layout_height="@dimen/_28sdp"
+        android:background="?android:attr/selectableItemBackgroundBorderless"
         android:contentDescription="@string/macro_move_down"
-        app:icon="@drawable/ic_aurora_arrow_down"
-        app:iconSize="18dp"
+        android:padding="@dimen/_4sdp"
+        android:src="@drawable/ic_aurora_arrow_down"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/step_edit"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <com.google.android.material.button.MaterialButton
+    <androidx.appcompat.widget.AppCompatImageButton
         android:id="@+id/step_edit"
-        style="@style/Widget.Material3.Button.IconButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="@dimen/_28sdp"
+        android:layout_height="@dimen/_28sdp"
+        android:background="?android:attr/selectableItemBackgroundBorderless"
         android:contentDescription="@string/macro_edit"
-        app:icon="@drawable/ic_edit"
-        app:iconSize="18dp"
+        android:padding="@dimen/_4sdp"
+        android:src="@drawable/ic_edit"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/step_delete"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <com.google.android.material.button.MaterialButton
+    <androidx.appcompat.widget.AppCompatImageButton
         android:id="@+id/step_delete"
-        style="@style/Widget.Material3.Button.IconButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="@dimen/_28sdp"
+        android:layout_height="@dimen/_28sdp"
+        android:background="?android:attr/selectableItemBackgroundBorderless"
         android:contentDescription="@string/generic_delete"
-        app:icon="@drawable/ic_menu_delete_forever"
-        app:iconSize="18dp"
+        android:padding="@dimen/_4sdp"
+        android:src="@drawable/ic_menu_delete_forever"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

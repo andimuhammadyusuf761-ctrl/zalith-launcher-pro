@@ -8,15 +8,17 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.Spinner
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.widget.AppCompatButton
+import androidx.appcompat.widget.AppCompatImageButton
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.button.MaterialButton
-import com.google.android.material.textfield.TextInputEditText
 import com.movtery.anim.AnimPlayer
 import com.movtery.anim.animations.Animations
 import com.movtery.zalithlauncher.R
@@ -45,7 +47,7 @@ class MacroManagerFragment : FragmentWithAnim(R.layout.fragment_macro_list) {
     private lateinit var listRoot: View
     private lateinit var recycler: RecyclerView
     private lateinit var emptyText: TextView
-    private lateinit var addButton: MaterialButton
+    private lateinit var addButton: Button
 
     private val macros = mutableListOf<Macro>()
     private val listAdapter = MacroListAdapter()
@@ -106,9 +108,9 @@ class MacroManagerFragment : FragmentWithAnim(R.layout.fragment_macro_list) {
         inner class VH(v: View) : RecyclerView.ViewHolder(v) {
             val name: TextView = v.findViewById(R.id.macro_item_name)
             val sub: TextView = v.findViewById(R.id.macro_item_summary)
-            val run: MaterialButton = v.findViewById(R.id.macro_item_run)
-            val edit: MaterialButton = v.findViewById(R.id.macro_item_edit)
-            val del: MaterialButton = v.findViewById(R.id.macro_item_delete)
+            val run: ImageButton = v.findViewById(R.id.macro_item_run)
+            val edit: ImageButton = v.findViewById(R.id.macro_item_edit)
+            val del: ImageButton = v.findViewById(R.id.macro_item_delete)
         }
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VH {
@@ -156,8 +158,8 @@ private class MacroEditorView(
 ) : LinearLayout(context) {
     private val editing = original.deepCopy()
     private val stepsRecycler: RecyclerView
-    private val nameField: TextInputEditText
-    private val loopField: TextInputEditText
+    private val nameField: EditText
+    private val loopField: EditText
     private val stepsAdapter = StepsAdapter()
 
     init {
@@ -165,7 +167,7 @@ private class MacroEditorView(
         val pad = (resources.displayMetrics.density * 12).toInt()
         setPadding(pad, pad, pad, pad)
 
-        nameField = TextInputEditText(context).apply {
+        nameField = EditText(context).apply {
             hint = context.getString(R.string.macro_name_hint)
             setText(editing.name)
         }
@@ -177,7 +179,7 @@ private class MacroEditorView(
         val loopLabel = TextView(context).apply {
             text = context.getString(R.string.macro_loop_hint)
         }
-        loopField = TextInputEditText(context).apply {
+        loopField = EditText(context).apply {
             inputType = InputType.TYPE_CLASS_NUMBER
             setText(editing.loopCount.toString())
             hint = context.getString(R.string.macro_loop_helper)
@@ -202,7 +204,7 @@ private class MacroEditorView(
             setTextColor(0xFFFFFFFF.toInt())
             textSize = 14f
         }
-        val addStep = MaterialButton(context).apply {
+        val addStep = Button(context).apply {
             text = context.getString(R.string.macro_add_step)
             setOnClickListener {
                 openStepEditor(MacroStep()) { newStep ->
@@ -211,7 +213,7 @@ private class MacroEditorView(
                 }
             }
         }
-        val testRun = MaterialButton(context).apply {
+        val testRun = Button(context).apply {
             text = context.getString(R.string.macro_run_test)
             setOnClickListener {
                 commit(autoSave = false)
@@ -312,10 +314,10 @@ private class MacroEditorView(
             val idx: TextView = v.findViewById(R.id.step_index)
             val label: TextView = v.findViewById(R.id.step_label)
             val sub: TextView = v.findViewById(R.id.step_sub)
-            val up: MaterialButton = v.findViewById(R.id.step_up)
-            val down: MaterialButton = v.findViewById(R.id.step_down)
-            val edit: MaterialButton = v.findViewById(R.id.step_edit)
-            val del: MaterialButton = v.findViewById(R.id.step_delete)
+            val up: ImageButton = v.findViewById(R.id.step_up)
+            val down: ImageButton = v.findViewById(R.id.step_down)
+            val edit: ImageButton = v.findViewById(R.id.step_edit)
+            val del: ImageButton = v.findViewById(R.id.step_delete)
         }
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VH {
