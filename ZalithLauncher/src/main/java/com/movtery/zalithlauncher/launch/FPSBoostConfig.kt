@@ -51,12 +51,144 @@ object FPSBoostConfig {
     /**
      * Adaptive variant that also folds the detected device tier into the
      * profile (GC threads, heap region, pre-touch, JIT thresholds).
+     *
+     * Aurora v4: MC 1.21+ takes a dedicated "Hyper Boost" path with
+     * Generational ZGC on HIGH-tier hardware, aggressive JIT inlining,
+     * and Java 21's vector / FFM modules pre-enabled.
      */
     fun getAdaptiveBoostProfile(context: Context, versionName: String): BoostProfile {
         val tier = detectDeviceTier(context)
+        val ver = parseVersion(versionName)
+        Logging.i("FPSBoost", "Detected MC $versionName -> $ver, tier=$tier")
+
+        if (ver.first >= 21) {
+            val hyper = getHyperProfile(tier)
+            return withCommonAuroraFlags(hyper)
+        }
+
         val base = getBoostProfile(versionName)
         Logging.i("FPSBoost", "Adaptive tier=$tier for ${base.name}")
         return overlayDeviceTier(base, tier)
+    }
+
+    /**
+     * Aurora v4 "Hyper Boost" — Java 21 / MC 1.21+ dedicated path.
+     *
+     * - HIGH tier: Generational ZGC (sub-ms GC pauses → kills combat /
+     *   chunk-load stutter), JIT inlining boosted, big 384M code cache.
+     * - MID / LOW tier: tightly-tuned G1 (ZGC needs too much heap on
+     *   2-3GB devices) plus the same JIT inlining.
+     * - Tier-scaled GC / JIT thread counts.
+     * - `--add-modules=jdk.incubator.vector` so Sodium-style mods can
+     *   use Java 21 SIMD intrinsics on supported CPUs.
+     */
+    private fun getHyperProfile(tier: DeviceTier): BoostProfile {
+        val cores = Runtime.getRuntime().availableProcessors()
+        val isHigh = tier == DeviceTier.HIGH
+        val isLow = tier == DeviceTier.LOW
+
+        val gcArgs: List<String> = if (isHigh) {
+            listOf(
+                "-XX:+UnlockExperimentalVMOptions",
+                "-XX:+UseZGC",
+                "-XX:+ZGenerational",
+                "-XX:-ZProactive",
+                "-XX:ZUncommitDelay=300",
+                "-XX:+UseStringDeduplication",
+                "-XX:+UseCompressedOops",
+                "-XX:+ParallelRefProcEnabled",
+                "-XX:+DisableExplicitGC"
+            )
+        } else {
+            listOf(
+                "-XX:+UnlockExperimentalVMOptions",
+                "-XX:+UseG1GC",
+                "-XX:MaxGCPauseMillis=" + (if (isLow) "10" else "4"),
+                "-XX:G1NewSizePercent=20",
+                "-XX:G1MaxNewSizePercent=60",
+                "-XX:G1HeapRegionSize=" + (if (isLow) "4M" else "8M"),
+                "-XX:G1ReservePercent=20",
+                "-XX:G1HeapWastePercent=5",
+                "-XX:G1MixedGCCountTarget=4",
+                "-XX:InitiatingHeapOccupancyPercent=10",
+                "-XX:G1MixedGCLiveThresholdPercent=90",
+                "-XX:G1RSetUpdatingPauseTimePercent=5",
+                "-XX:SurvivorRatio=32",
+                "-XX:MaxTenuringThreshold=1",
+                "-XX:+UseStringDeduplication",
+                "-XX:+UseCompressedOops",
+                "-XX:+OptimizeStringConcat",
+                "-XX:+ParallelRefProcEnabled",
+                "-XX:+DisableExplicitGC"
+            )
+        }
+
+        val jitArgs = listOf(
+            "-XX:+UnlockDiagnosticVMOptions",
+            "-XX:+UseInlineCaches",
+            "-XX:+DoEscapeAnalysis",
+            "-XX:+EliminateLocks",
+            "-XX:+EliminateAllocations",
+            "-XX:+UseTypeSpeculation",
+            "-XX:MaxInlineLevel=15",
+            "-XX:InlineSmallCode=2000",
+            "-XX:FreqInlineSize=325",
+            "-XX:LoopUnrollLimit=200",
+            "-XX:ReservedCodeCacheSize=" + (if (isLow) "256M" else "384M"),
+            "-XX:InitialCodeCacheSize=128M"
+        )
+
+        val perfArgs = listOf(
+            "-XX:+PerfDisableSharedMem"
+        )
+
+        val tierThreads = when (tier) {
+            DeviceTier.HIGH -> listOf(
+                "-XX:ParallelGCThreads=${(cores / 2).coerceIn(4, 8)}",
+                "-XX:ConcGCThreads=${(cores / 4).coerceIn(2, 4)}",
+                "-XX:CICompilerCount=4",
+                "-XX:+AlwaysPreTouch"
+            )
+            DeviceTier.MID -> listOf(
+                "-XX:ParallelGCThreads=${(cores / 2).coerceIn(2, 4)}",
+                "-XX:ConcGCThreads=${(cores / 4).coerceIn(1, 2)}",
+                "-XX:CICompilerCount=2"
+            )
+            DeviceTier.LOW -> listOf(
+                "-XX:ParallelGCThreads=2",
+                "-XX:ConcGCThreads=1",
+                "-XX:CICompilerCount=2",
+                "-XX:TieredStopAtLevel=2",
+                "-XX:-AlwaysPreTouch"
+            )
+        }
+
+        val networkArgs = listOf(
+            "-Djava.net.preferIPv4Stack=true",
+            "-Dnetworkaddress.cache.ttl=60"
+        )
+
+        // Java 21 module flags: enables SIMD intrinsics for renderers that opt in
+        // (e.g. Sodium's vectorized chunk meshing) and quietens FFM access warnings.
+        val moduleArgs = listOf(
+            "--add-modules=jdk.incubator.vector",
+            "--enable-native-access=ALL-UNNAMED"
+        )
+
+        val merged = mergeJvmArgs(
+            gcArgs + jitArgs + perfArgs + tierThreads + networkArgs,
+            moduleArgs
+        )
+
+        val gcLabel = if (isHigh) "ZGen" else "G1+"
+        return BoostProfile(
+            name = "Hyper Boost (1.21+) · ${tier.name} · $gcLabel",
+            description = "Aurora v4: Java-21-tuned, " +
+                if (isHigh) "Generational ZGC, sub-ms GC pauses, SIMD"
+                else "tight G1, aggressive JIT inlining",
+            jvmArgs = merged,
+            envVars = emptyMap()
+        )
     }
 
     /**
