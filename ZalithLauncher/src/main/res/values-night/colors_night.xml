@@ -2,46 +2,66 @@
 <resources>
     <color name="black_or_white">#F1F5F9</color>
 
-    <!-- Zalith Remake: Modern dark theme with teal accents -->
-    <color name="background_app">#0F172A</color>
+    <!-- ================================================================
+         Zalith Remake "Aurora" palette - DARK theme
+         Midnight + Neon Violet + Cyan with deeper blacks for OLED.
+         ================================================================ -->
+
+    <!-- App surfaces -->
+    <color name="background_app">#0B0F1F</color>
     <color name="background_app_error">#450A0A</color>
-    <color name="background_overlay">#334155</color>
-    <color name="background_status_bar">#1E293B</color>
-    <color name="background_menu_top">#1E293B</color>
+    <color name="background_overlay">#1F2540</color>
+    <color name="background_status_bar">#0E1226</color>
+    <color name="background_menu_top">#161B36</color>
     <color name="background_menu_top_error">#991B1B</color>
-    <color name="background_menu_element">#0D9488</color>
-    <color name="background_ripple_effect">#CBD5E1</color>
+    <color name="background_menu_element">#7C5CFF</color>
+    <color name="background_ripple_effect">#9CA3D9</color>
 
-    <color name="button_background">#334155</color>
-    <color name="button_background_selected">#475569</color>
-    <color name="dialog_background">#1E293B</color>
+    <!-- Buttons -->
+    <color name="button_background">#1B2142</color>
+    <color name="button_background_selected">#2A305A</color>
+    <color name="dialog_background">#141936</color>
 
-    <color name="menu_bar">#475569</color>
-    <color name="menu_overlay">#CC1E293B</color>
-    <color name="menu_progress">#14B8A6</color>
+    <!-- Menu surfaces -->
+    <color name="menu_bar">#1F2545</color>
+    <color name="menu_overlay">#CC141936</color>
+    <color name="menu_progress">#A78BFF</color>
 
-    <color name="background_item">#BF1E293B</color>
-    <color name="background_item_selected">#D8334155</color>
+    <!-- Item states -->
+    <color name="background_item">#BF141936</color>
+    <color name="background_item_selected">#D81F2545</color>
     <color name="background_item_disabled">#D8450A0A</color>
     <color name="background_sponsor_intermediate">#80B45309</color>
     <color name="background_sponsor_advanced">#80C2410C</color>
 
-    <color name="edit_box_fill">#334155</color>
-    <color name="edit_box_fill_selected">#475569</color>
+    <!-- Edit boxes -->
+    <color name="edit_box_fill">#1B2142</color>
+    <color name="edit_box_fill_selected">#2A305A</color>
 
-    <color name="mod_category_fill">#80334155</color>
-    <color name="text_background_fill">#B3334155</color>
+    <!-- Misc -->
+    <color name="mod_category_fill">#801F2545</color>
+    <color name="text_background_fill">#B31F2545</color>
 
-    <color name="settings_category">#2DD4BF</color>
-
+    <color name="settings_category">#A78BFF</color>
     <color name="icon_color">#F1F5F9</color>
-
     <color name="primary_text">#F1F5F9</color>
 
-    <!-- Zalith Remake accent colors -->
-    <color name="accent_primary">#14B8A6</color>
-    <color name="accent_secondary">#2DD4BF</color>
-    <color name="play_button_bg">#0D9488</color>
-    <color name="play_button_pressed">#14B8A6</color>
-    <color name="card_shadow">#1A000000</color>
+    <!-- Aurora-specific accent tokens (dark) -->
+    <color name="aurora_indigo">#1F2545</color>
+    <color name="aurora_indigo_deep">#0B0F1F</color>
+    <color name="aurora_violet">#A78BFF</color>
+    <color name="aurora_violet_bright">#C7B6FF</color>
+    <color name="aurora_cyan">#67E8F9</color>
+    <color name="aurora_pink">#F9A8D4</color>
+    <color name="aurora_surface">#141936</color>
+    <color name="aurora_surface_high">#1F2545</color>
+    <color name="aurora_outline">#33FFFFFF</color>
+    <color name="aurora_outline_strong">#55FFFFFF</color>
+
+    <!-- Legacy accent aliases kept for code references that still use them. -->
+    <color name="accent_primary">#A78BFF</color>
+    <color name="accent_secondary">#67E8F9</color>
+    <color name="play_button_bg">#7C5CFF</color>
+    <color name="play_button_pressed">#A78BFF</color>
+    <color name="card_shadow">#33000000</color>
 </resources>

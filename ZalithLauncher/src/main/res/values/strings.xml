@@ -391,6 +391,9 @@
     <string name="main_install_jar_file">Execute .jar file</string>
     <string name="main_share_logs">Share log files</string>
     <string name="main_launch">Launch Game</string>
+    <!-- Aurora v3 GUI -->
+    <string name="aurora_quick_actions">Quick Actions</string>
+    <string name="aurora_fps_boost_active">FPS Boost · Active</string>
     <string name="setting_category_control">Control settings</string>
     <string name="setting_category_virtual_mouse">Virtual mouse</string>
     <string name="setting_category_gyro_controls">Gyro controls</string>

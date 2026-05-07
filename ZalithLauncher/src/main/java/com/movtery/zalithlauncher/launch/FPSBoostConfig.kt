@@ -1,17 +1,27 @@
 package com.movtery.zalithlauncher.launch
 
+import android.app.ActivityManager
+import android.content.Context
+import android.os.Build
 import com.movtery.zalithlauncher.feature.log.Logging
 
 /**
- * Zalith Remake FPS Boost Configuration
- * Version-specific JVM and environment variable optimizations
- * for Minecraft 1.8.x through 1.21.x
+ * Zalith Remake FPS Boost Configuration (v3 "Aurora").
+ *
+ * Provides:
+ *  1. Version-aware JVM tuning profiles for MC 1.8.x - 1.21.x.
+ *  2. Adaptive device-tier overlays (HIGH / MID / LOW) so the same
+ *     base profile scales to the actual hardware.
+ *  3. Common code-cache, metaspace, security and JIT flags shared by
+ *     every profile.
  *
  * IMPORTANT: -XX:+UnlockExperimentalVMOptions MUST come before any
  * experimental G1GC flags (G1NewSizePercent, G1MaxNewSizePercent,
  * G1MixedGCLiveThresholdPercent, G1RSetUpdatingPauseTimePercent)
  */
 object FPSBoostConfig {
+
+    enum class DeviceTier { HIGH, MID, LOW }
 
     data class BoostProfile(
         val name: String,
@@ -21,18 +31,62 @@ object FPSBoostConfig {
     )
 
     /**
-     * Detect MC version range and return the optimal boost profile
+     * Detect MC version range and return the optimal boost profile.
+     * Pure version-based (kept for backwards compatibility).
      */
     fun getBoostProfile(versionName: String): BoostProfile {
         val ver = parseVersion(versionName)
         Logging.i("FPSBoost", "Detected MC version: $versionName -> parsed as $ver")
 
-        return when {
+        val base = when {
             ver.first <= 12 -> getLegacyProfile()
             ver.first in 13..16 -> getModernProfile()
             ver.first in 17..19 -> getHeavyProfile()
             ver.first >= 20 -> getUltraProfile()
             else -> getDefaultProfile()
+        }
+        return withCommonAuroraFlags(base)
+    }
+
+    /**
+     * Adaptive variant that also folds the detected device tier into the
+     * profile (GC threads, heap region, pre-touch, JIT thresholds).
+     */
+    fun getAdaptiveBoostProfile(context: Context, versionName: String): BoostProfile {
+        val tier = detectDeviceTier(context)
+        val base = getBoostProfile(versionName)
+        Logging.i("FPSBoost", "Adaptive tier=$tier for ${base.name}")
+        return overlayDeviceTier(base, tier)
+    }
+
+    /**
+     * Heuristic device tier classification.
+     *  HIGH: 8+ cores, >= 6GB RAM, 64-bit, API 29+
+     *  LOW : <= 4 cores OR < 3GB RAM
+     *  MID : everything else
+     */
+    fun detectDeviceTier(context: Context): DeviceTier {
+        val cores = Runtime.getRuntime().availableProcessors()
+        val totalMb = totalDeviceMemoryMb(context)
+        val is64Bit = Build.SUPPORTED_64_BIT_ABIS.isNotEmpty()
+        val sdk = Build.VERSION.SDK_INT
+
+        return when {
+            cores >= 8 && totalMb >= 6 * 1024 && is64Bit && sdk >= Build.VERSION_CODES.Q -> DeviceTier.HIGH
+            cores <= 4 || totalMb < 3 * 1024 -> DeviceTier.LOW
+            else -> DeviceTier.MID
+        }
+    }
+
+    private fun totalDeviceMemoryMb(context: Context): Long {
+        return try {
+            val am = context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
+            val info = ActivityManager.MemoryInfo()
+            am.getMemoryInfo(info)
+            info.totalMem / (1024L * 1024L)
+        } catch (e: Exception) {
+            Logging.w("FPSBoost", "Failed to read total device memory", e)
+            2048L
         }
     }
 
@@ -215,7 +269,7 @@ object FPSBoostConfig {
      * Common performance JVM flags (fallback when no version detected)
      */
     fun getCommonJvmFlags(): List<String> {
-        return listOf(
+        val base = listOf(
             "-XX:+UnlockExperimentalVMOptions",
             "-XX:+UseG1GC",
             "-XX:MaxGCPauseMillis=10",
@@ -239,5 +293,94 @@ object FPSBoostConfig {
             "-XX:+ParallelRefProcEnabled",
             "-XX:+DisableExplicitGC"
         )
+        return mergeJvmArgs(base, auroraSharedFlags())
+    }
+
+    /**
+     * Aurora v3: shared JIT/code-cache/metaspace/security flags applied
+     * to every profile via [withCommonAuroraFlags].
+     */
+    private fun auroraSharedFlags(): List<String> {
+        return listOf(
+            // Code cache / JIT
+            "-XX:ReservedCodeCacheSize=200M",
+            "-XX:InitialCodeCacheSize=64M",
+            "-XX:+SegmentedCodeCache",
+            "-XX:CompileThreshold=1500",
+            // Metaspace
+            "-XX:MetaspaceSize=128M",
+            "-XX:MaxMetaspaceSize=384M",
+            // Security / DNS / IO
+            "-Djava.security.egd=file:/dev/./urandom",
+            "-Dsun.io.useCanonCaches=false",
+            "-Dsun.java2d.opengl=false",
+            // Networking sane defaults
+            "-Dsun.net.client.defaultConnectTimeout=15000",
+            "-Dsun.net.client.defaultReadTimeout=30000",
+            // Misc Minecraft modlauncher friendliness
+            "-Dlog4j2.formatMsgNoLookups=true",
+            "-Dfml.earlyprogresswindow=false"
+        )
+    }
+
+    /**
+     * Append the common Aurora flags to a profile while de-duplicating any
+     * keys that are already present (e.g. -Xx:Foo=bar).
+     */
+    private fun withCommonAuroraFlags(profile: BoostProfile): BoostProfile {
+        val merged = mergeJvmArgs(profile.jvmArgs, auroraSharedFlags())
+        return profile.copy(jvmArgs = merged)
+    }
+
+    /**
+     * Apply tier-specific overlay on top of a base profile.
+     */
+    private fun overlayDeviceTier(profile: BoostProfile, tier: DeviceTier): BoostProfile {
+        val cores = Runtime.getRuntime().availableProcessors()
+        val tierFlags = when (tier) {
+            DeviceTier.HIGH -> listOf(
+                "-XX:ParallelGCThreads=${(cores / 2).coerceIn(4, 8)}",
+                "-XX:ConcGCThreads=${(cores / 4).coerceIn(2, 4)}",
+                "-XX:G1HeapRegionSize=16M",
+                "-XX:+AlwaysPreTouch",
+                "-XX:CICompilerCount=4"
+            )
+            DeviceTier.MID -> listOf(
+                "-XX:ParallelGCThreads=${(cores / 2).coerceIn(2, 4)}",
+                "-XX:ConcGCThreads=${(cores / 4).coerceIn(1, 2)}",
+                "-XX:G1HeapRegionSize=8M",
+                "-XX:CICompilerCount=2"
+            )
+            DeviceTier.LOW -> listOf(
+                "-XX:ParallelGCThreads=2",
+                "-XX:ConcGCThreads=1",
+                "-XX:G1HeapRegionSize=4M",
+                "-XX:-AlwaysPreTouch",
+                "-XX:CICompilerCount=2",
+                "-XX:TieredStopAtLevel=1"
+            )
+        }
+        return profile.copy(
+            name = profile.name + " · " + tier.name,
+            description = profile.description + " (device tier: ${tier.name})",
+            jvmArgs = mergeJvmArgs(profile.jvmArgs, tierFlags)
+        )
+    }
+
+    /**
+     * Merge two JVM arg lists; later list wins on duplicate "-XX:Flag=" /
+     * "-D...=" keys so that overlays correctly override defaults.
+     */
+    private fun mergeJvmArgs(base: List<String>, overlay: List<String>): List<String> {
+        val keyed = LinkedHashMap<String, String>()
+        for (arg in base + overlay) {
+            keyed[argKey(arg)] = arg
+        }
+        return keyed.values.toList()
+    }
+
+    private fun argKey(arg: String): String {
+        val eq = arg.indexOf('=')
+        return if (eq >= 0) arg.substring(0, eq) else arg
     }
 }
