@@ -168,12 +168,11 @@ object FPSBoostConfig {
             "-Dnetworkaddress.cache.ttl=60"
         )
 
-        // Java 21 module flags: enables SIMD intrinsics for renderers that opt in
-        // (e.g. Sodium's vectorized chunk meshing) and quietens FFM access warnings.
-        val moduleArgs = listOf(
-            "--add-modules=jdk.incubator.vector",
-            "--enable-native-access=ALL-UNNAMED"
-        )
+        // NOTE: jdk.incubator.vector / --enable-native-access were dropped because
+        // PojavLauncher's bundled JRE 21 is stripped and missing the incubator
+        // vector module, which made the boot layer fail to initialize.
+        // The renderer fast path still picks up the JIT inlining wins below.
+        val moduleArgs = emptyList<String>()
 
         val merged = mergeJvmArgs(
             gcArgs + jitArgs + perfArgs + tierThreads + networkArgs,
@@ -449,9 +448,10 @@ object FPSBoostConfig {
             "-XX:InitialCodeCacheSize=64M",
             "-XX:+SegmentedCodeCache",
             "-XX:CompileThreshold=1500",
-            // v5 JIT polish
-            "-XX:+UseFastUnorderedTimeStamps",
+            // v5 JIT polish — diagnostic/experimental unlocks MUST come first.
             "-XX:+UnlockDiagnosticVMOptions",
+            "-XX:+UnlockExperimentalVMOptions",
+            "-XX:+UseFastUnorderedTimeStamps",
             "-XX:GuaranteedSafepointInterval=0",
             "-XX:+DoEscapeAnalysis",
             "-XX:+EliminateLocks",
