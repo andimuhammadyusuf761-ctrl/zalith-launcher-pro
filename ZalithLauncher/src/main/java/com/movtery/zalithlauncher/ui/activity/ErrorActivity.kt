@@ -4,11 +4,15 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import android.view.WindowManager
 import androidx.core.content.ContextCompat
 import com.movtery.zalithlauncher.InfoCenter
 import com.movtery.zalithlauncher.R
 import com.movtery.zalithlauncher.databinding.ActivityErrorBinding
+import com.movtery.zalithlauncher.feature.crash.ModCrashAnalyzer
+import com.movtery.zalithlauncher.setting.AllSettings
 import com.movtery.zalithlauncher.utils.ZHTools
 import net.kdt.pojavlaunch.Tools
 
@@ -69,6 +73,7 @@ class ErrorActivity : BaseActivity() {
 
     private fun showGameCrash(extras: Bundle) {
         val code = extras.getInt(BUNDLE_CODE, 0)
+        val gameDirPath = extras.getString(BUNDLE_GAME_DIR)
         if (code == 0) {
             finish()
             return
@@ -89,6 +94,66 @@ class ErrorActivity : BaseActivity() {
             this.topView.setBackgroundColor(ContextCompat.getColor(context, R.color.background_menu_top))
             this.background.setBackgroundColor(ContextCompat.getColor(context, R.color.background_app))
         }
+
+        if (AllSettings.autoModCrashRecovery.getValue()) {
+            val analysis = ModCrashAnalyzer.analyze(gameDirPath)
+            if (analysis.isLikelyModCrash) showModCrashRecovery(gameDirPath, analysis)
+        }
+    }
+
+    private fun showModCrashRecovery(gameDirPath: String?, analysis: ModCrashAnalyzer.AnalysisResult) {
+        val suspectText = if (analysis.suspects.isEmpty()) {
+            "No exact mod was isolated. Safe Mode will disable all mods after backing them up."
+        } else {
+            analysis.suspects.joinToString("\n") { suspect ->
+                "• ${suspect.file.name} — ${suspect.reason}. Tip: try updating this mod or checking Minecraft/loader compatibility."
+            }
+        }
+        binding.errorTitle.text = "Mod Crash Recovery"
+        binding.errorText.text = "${analysis.summary}\n\n$suspectText\n\nLog: ${analysis.logFile?.absolutePath ?: "unknown"}"
+        binding.errorRestart.text = "Fix Mods & Restart"
+        binding.errorRestart.setOnClickListener { showModFixActions(gameDirPath, analysis) }
+    }
+
+    private fun showModFixActions(gameDirPath: String?, analysis: ModCrashAnalyzer.AnalysisResult) {
+        val actions = mutableListOf("Launch in Safe Mode (No Mods)", "View Full Crash Log", "Ignore & Try Again")
+        if (analysis.suspects.isNotEmpty()) {
+            actions.add(0, "Delete Suspected Mods")
+            actions.add(0, "Disable Suspected Mods & Restart")
+        }
+        AlertDialog.Builder(this)
+            .setTitle("Game crashed likely because of mods")
+            .setItems(actions.toTypedArray()) { _, which ->
+                when (actions[which]) {
+                    "Disable Suspected Mods & Restart" -> {
+                        val count = ModCrashAnalyzer.disableSuspects(gameDirPath, analysis.suspects)
+                        Toast.makeText(this, "Disabled $count mod(s).", Toast.LENGTH_LONG).show()
+                        startActivity(Intent(this, SplashActivity::class.java))
+                    }
+                    "Delete Suspected Mods" -> confirmDeleteSuspects(gameDirPath, analysis)
+                    "Launch in Safe Mode (No Mods)" -> {
+                        val count = ModCrashAnalyzer.safeModeDisableAll(gameDirPath)
+                        Toast.makeText(this, "Safe Mode disabled $count mod(s).", Toast.LENGTH_LONG).show()
+                        startActivity(Intent(this, SplashActivity::class.java))
+                    }
+                    "View Full Crash Log" -> binding.errorText.text = analysis.logFile?.readText()?.takeLast(256_000) ?: "Crash log unavailable."
+                    else -> startActivity(Intent(this, SplashActivity::class.java))
+                }
+            }
+            .show()
+    }
+
+    private fun confirmDeleteSuspects(gameDirPath: String?, analysis: ModCrashAnalyzer.AnalysisResult) {
+        AlertDialog.Builder(this)
+            .setTitle("Delete suspected mods?")
+            .setMessage("A backup of the mods folder will be created first. This cannot be undone from the launcher UI.")
+            .setPositiveButton("Delete") { _, _ ->
+                val count = ModCrashAnalyzer.deleteSuspects(gameDirPath, analysis.suspects)
+                Toast.makeText(this, "Deleted $count mod(s).", Toast.LENGTH_LONG).show()
+                startActivity(Intent(this, SplashActivity::class.java))
+            }
+            .setNegativeButton(android.R.string.cancel, null)
+            .show()
     }
 
     private fun showEasterEgg() {
@@ -112,6 +177,7 @@ class ErrorActivity : BaseActivity() {
         private const val BUNDLE_IS_GAME_CRASH = "is_game_crash"
         private const val BUNDLE_IS_SIGNAL = "is_signal"
         private const val BUNDLE_CODE = "code"
+        private const val BUNDLE_GAME_DIR = "game_dir"
         private const val BUNDLE_THROWABLE = "throwable"
         private const val BUNDLE_SAVE_PATH = "save_path"
         private const val BUNDLE_EASTER_EGG = "easter_egg"
@@ -128,15 +194,18 @@ class ErrorActivity : BaseActivity() {
         }
 
         @JvmStatic
+        @JvmOverloads
         fun showExitMessage(
             ctx: Context,
             code: Int,
-            isSignal: Boolean
+            isSignal: Boolean,
+            gameDirPath: String? = null
         ) {
             val intent = Intent(ctx, ErrorActivity::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             intent.putExtra(BUNDLE_CODE, code)
+            intent.putExtra(BUNDLE_GAME_DIR, gameDirPath)
             intent.putExtra(BUNDLE_IS_LAUNCHER_CRASH, false)
             intent.putExtra(BUNDLE_IS_SIGNAL, isSignal)
             intent.putExtra(BUNDLE_IS_GAME_CRASH, true)

@@ -500,13 +500,12 @@ public final class JREUtils {
         userArgs.add("-Dimgui.library.name=libimgui-javaarm64.so");
         // ===== End Mod Compatibility Fixes =====
 
-        // ===== Zalith Remake FPS Boost v2: Version-Specific Optimization =====
-        // Apply version-specific FPS boost profile
+        // ===== Zalith Remake FPS Boost v3 "Aurora": Adaptive, version + device-tier aware =====
         if (gameVersion != null) {
             String versionName = gameVersion.getVersionName();
             com.movtery.zalithlauncher.launch.FPSBoostConfig.BoostProfile profile =
-                com.movtery.zalithlauncher.launch.FPSBoostConfig.INSTANCE.getBoostProfile(versionName);
-            Logger.appendToLog("FPS Boost: Applying profile '" + profile.getName() + "' for " + versionName);
+                com.movtery.zalithlauncher.launch.FPSBoostConfig.INSTANCE.getAdaptiveBoostProfile(activity, versionName);
+            Logger.appendToLog("FPS Boost: Applying adaptive profile '" + profile.getName() + "' for " + versionName);
             for (String arg : profile.getJvmArgs()) {
                 userArgs.add(arg);
             }
@@ -516,7 +515,7 @@ public final class JREUtils {
                 userArgs.add(arg);
             }
         }
-        // ===== End Zalith Remake FPS Boost v2 =====
+        // ===== End Zalith Remake FPS Boost v3 =====
 
         userArgs.addAll(JVMArgs);
         activity.runOnUiThread(() -> Toast.makeText(activity, activity.getString(R.string.autoram_info_msg, AllSettings.getRamAllocation().getValue().getValue()), Toast.LENGTH_SHORT).show());
@@ -537,7 +536,7 @@ public final class JREUtils {
         final int exitCode = VMLauncher.launchJVM(userArgs.toArray(new String[0]));
         Logger.appendToLog("Java Exit code: " + exitCode);
         if (exitCode != 0) {
-            ErrorActivity.showExitMessage(activity, exitCode, false);
+            ErrorActivity.showExitMessage(activity, exitCode, false, gameVersion == null ? null : gameVersion.getGameDir().getAbsolutePath());
         }
         EventBus.getDefault().post(new JvmExitEvent(exitCode));
     }
