@@ -26,6 +26,7 @@ import com.movtery.zalithlauncher.feature.MCOptions;
 import com.movtery.zalithlauncher.feature.log.Logging;
 import com.movtery.zalithlauncher.setting.AllSettings;
 import com.movtery.zalithlauncher.setting.AllStaticSettings;
+import com.movtery.zalithlauncher.feature.sound.SoundManager;
 import com.movtery.zalithlauncher.ui.activity.BaseActivity;
 
 import net.kdt.pojavlaunch.customcontrols.ControlLayout;
@@ -249,6 +250,7 @@ public class MinecraftGLSurface extends View implements GrabListener {
                 CallbackBridge.sendCursorPos(CallbackBridge.mouseX, CallbackBridge.mouseY);
                 return true;
             case MotionEvent.ACTION_SCROLL:
+                SoundManager.playScroll();
                 CallbackBridge.sendScroll(event.getAxisValue(MotionEvent.AXIS_HSCROLL), event.getAxisValue(MotionEvent.AXIS_VSCROLL));
                 return true;
             case MotionEvent.ACTION_BUTTON_PRESS:
@@ -338,6 +340,7 @@ public class MinecraftGLSurface extends View implements GrabListener {
                 break;
         }
         if(glfwButton == -256) return false;
+        if(status) SoundManager.playMouse(glfwButton);
         sendMouseButton(glfwButton, status);
         return true;
     }
