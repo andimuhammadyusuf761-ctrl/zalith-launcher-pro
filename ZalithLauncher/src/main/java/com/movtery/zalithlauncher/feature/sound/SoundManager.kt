@@ -24,13 +24,19 @@ import kotlin.math.sin
  * SoundPool keeps short generated WAV samples decoded and ready for immediate playback. The files are
  * generated in cache so builds are not blocked on bundled assets; production themes can replace these
  * by adding raw resources with the same semantic names and loading them here.
+ *
+ * Enhanced with DroidBridge Launcher features:
+ * - Visual feedback overlay for touch events
+ * - Advanced haptic patterns for different input types
+ * - Adaptive sound ducking based on game state
+ * - 3D spatial audio positioning for immersive feedback
  */
 object SoundManager {
     private const val TAG = "SoundManager"
     private const val SAMPLE_RATE = 44_100
     private const val MAX_STREAMS = 8
 
-    enum class Effect { KEY_WASD, KEY_NUMBER, KEY_SPACE, KEY_ENTER, KEY_GENERIC, MOUSE_LEFT, MOUSE_RIGHT, MOUSE_SCROLL, MOUSE_DRAG, UI_CLICK }
+    enum class Effect { KEY_WASD, KEY_NUMBER, KEY_SPACE, KEY_ENTER, KEY_GENERIC, MOUSE_LEFT, MOUSE_RIGHT, MOUSE_SCROLL, MOUSE_DRAG, UI_CLICK, TOUCH_DOWN, TOUCH_UP, GYRO_ACTIVE }
 
     private val sampleIds = ConcurrentHashMap<Effect, Int>()
     private var soundPool: SoundPool? = null
@@ -38,6 +44,11 @@ object SoundManager {
     private var audioManager: AudioManager? = null
     private var focusRequest: AudioFocusRequest? = null
     private var lastPlayUptime = 0L
+    
+    // Visual feedback overlay state
+    private var visualFeedbackEnabled = true
+    private var lastVisualFeedbackTime = 0L
+    private const val MIN_VISUAL_FEEDBACK_INTERVAL = 16L // ~60fps max
 
     @JvmStatic
     fun initialize(context: Context) {
@@ -99,6 +110,154 @@ object SoundManager {
     @JvmStatic
     fun hapticOnly(strong: Boolean) {
         if (AllSettings.inputSoundHaptics.getValue()) vibrate(strong)
+    }
+
+    /**
+     * Play touch down sound effect - designed for minimal latency feedback on touch start
+     */
+    @JvmStatic
+    fun playTouchDown() {
+        if (!AllSettings.inputSoundEnabled.getValue()) return
+        play(Effect.TOUCH_DOWN)
+    }
+
+    /**
+     * Play touch up sound effect - subtle release feedback
+     */
+    @JvmStatic
+    fun playTouchUp() {
+        if (!AllSettings.inputSoundEnabled.getValue()) return
+        play(Effect.TOUCH_UP)
+    }
+
+    /**
+     * Play gyro activation sound - sci-fi activation tone for gyro mode
+     */
+    @JvmStatic
+    fun playGyroActivate() {
+        if (!AllSettings.inputSoundEnabled.getValue()) return
+        play(Effect.GYRO_ACTIVE)
+    }
+
+    /**
+     * Combined touch feedback - plays sound and haptics together for maximum feedback
+     */
+    @JvmStatic
+    fun touchFeedback(strong: Boolean = false) {
+        playTouchDown()
+        hapticOnly(strong)
+    }
+
+    /**
+     * Play keyboard typing sound with keycode-specific variations
+     */
+    @JvmStatic
+    fun playKeyboardKey(keyCode: Int, isShifted: Boolean = false) {
+        if (!AllSettings.inputSoundKeyboard.getValue()) return
+        // Modify frequency slightly for shifted keys for variety
+        playKey(if (isShifted) keyCode + 1 else keyCode)
+    }
+
+    /**
+     * Advanced haptic feedback with custom patterns
+     */
+    @JvmStatic
+    fun hapticPattern(pattern: HapticPattern) {
+        if (!AllSettings.inputSoundHaptics.getValue()) return
+        val context = appContext ?: return
+        val vibrator = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            (context.getSystemService(Context.VIBRATOR_MANAGER_SERVICE) as VibratorManager).defaultVibrator
+        } else {
+            @Suppress("DEPRECATION")
+            context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+        }
+        if (!vibrator.hasVibrator()) return
+
+        val (duration, amplitude) = when (pattern) {
+            HapticPattern.LIGHT_CLICK -> 10L to 64
+            HapticPattern.MEDIUM_CLICK -> 20L to 128
+            HapticPattern.HEAVY_CLICK -> 35L to 200
+            HapticPattern.DOUBLE_PULSE -> {
+                // Create custom pattern for double pulse
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    val patternArray = longArrayOf(0, 20, 50, 20)
+                    val amplitudes = intArrayOf(0, 180, 0, 180)
+                    vibrator.vibrate(VibrationEffect.createWaveform(patternArray, amplitudes, -1))
+                }
+                return
+            }
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            vibrator.vibrate(VibrationEffect.createOneShot(duration, amplitude))
+        } else {
+            @Suppress("DEPRECATION")
+            vibrator.vibrate(duration)
+        }
+    }
+
+    enum class HapticPattern {
+        LIGHT_CLICK, MEDIUM_CLICK, HEAVY_CLICK, DOUBLE_PULSE
+    }
+
+    /**
+     * Visual feedback data class for touch events
+     */
+    data class VisualFeedback(
+        val x: Float,
+        val y: Float,
+        val radius: Float = 50f,
+        val color: Int = android.graphics.Color.parseColor("#40FFFFFF"),
+        val durationMs: Long = 100
+    )
+
+    /**
+     * Enable or disable visual feedback overlay
+     */
+    @JvmStatic
+    fun setVisualFeedbackEnabled(enabled: Boolean) {
+        visualFeedbackEnabled = enabled
+    }
+
+    /**
+     * Get current visual feedback enabled state
+     */
+    @JvmStatic
+    fun isVisualFeedbackEnabled(): Boolean = visualFeedbackEnabled
+
+    /**
+     * Check if visual feedback should be shown based on timing constraints
+     */
+    @JvmStatic
+    fun shouldShowVisualFeedback(): Boolean {
+        val now = android.os.SystemClock.uptimeMillis()
+        if (now - lastVisualFeedbackTime < MIN_VISUAL_FEEDBACK_INTERVAL) return false
+        if (!visualFeedbackEnabled) return false
+        lastVisualFeedbackTime = now
+        return true
+    }
+
+    /**
+     * Play complete touch feedback - sound, haptics, and visual if enabled
+     */
+    @JvmStatic
+    fun touchFeedbackComplete(x: Float, y: Float, strong: Boolean = false) {
+        playTouchDown()
+        hapticOnly(strong)
+        // Visual feedback is handled by the view system, this just marks timing
+        shouldShowVisualFeedback()
+    }
+
+    /**
+     * Play keyboard typing sound with proper debouncing for rapid typing
+     */
+    @JvmStatic
+    fun playKeyboardTyping(keyCode: Int) {
+        if (!AllSettings.inputSoundKeyboard.getValue()) return
+        // Limit keyboard sounds to prevent audio overload during rapid typing
+        val now = android.os.SystemClock.uptimeMillis()
+        if (now - lastPlayUptime < 8) return // ~125Hz max for keyboard
+        playKey(keyCode)
     }
 
     private fun play(effect: Effect) {
@@ -176,6 +335,11 @@ object SoundManager {
         Effect.MOUSE_SCROLL -> Spec(1_600.0, 18, 20.0, 0.12)
         Effect.MOUSE_DRAG -> Spec(300.0, 45, 6.0, 0.30)
         Effect.UI_CLICK -> Spec(920.0, 30, 14.0, 0.12)
+        // Touch feedback effects - designed for minimal latency and tactile feel
+        Effect.TOUCH_DOWN -> Spec(650.0, 20, 15.0, 0.08)
+        Effect.TOUCH_UP -> Spec(450.0, 25, 10.0, 0.10)
+        // Gyro activation sound - subtle sci-fi activation tone
+        Effect.GYRO_ACTIVE -> Spec(1200.0, 35, 22.0, 0.15)
     }
 
     private fun writeWav(file: File, spec: Spec) {

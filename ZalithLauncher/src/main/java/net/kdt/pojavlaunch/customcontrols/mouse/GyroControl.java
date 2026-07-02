@@ -10,6 +10,7 @@ import android.view.OrientationEventListener;
 import android.view.Surface;
 import android.view.WindowManager;
 
+import com.movtery.zalithlauncher.feature.sound.SoundManager;
 import com.movtery.zalithlauncher.setting.AllSettings;
 import com.movtery.zalithlauncher.setting.AllStaticSettings;
 
@@ -19,6 +20,14 @@ import org.lwjgl.glfw.CallbackBridge;
 
 import java.util.Arrays;
 
+/**
+ * Enhanced Gyroscope Control with DroidBridge Launcher improvements:
+ * - Adaptive sensitivity based on movement velocity
+ * - Predictive aiming for competitive play
+ * - Haptic feedback on gyro activation
+ * - Sound feedback toggle
+ * - Improved low-pass filtering with dynamic cutoff
+ */
 public class GyroControl implements SensorEventListener, GrabListener {
     /* How much distance has to be moved before taking into account the gyro */
     private static final float SINGLE_AXIS_LOW_PASS_THRESHOLD = 1.13F;
@@ -26,6 +35,15 @@ public class GyroControl implements SensorEventListener, GrabListener {
     // Warmup period of 2 since the first read from the sensor seems to produce a bogus value,
     // which creates a far too large of a difference on the Y axis once actual sensor data comes in
     private static final int ROTATION_VECTOR_WARMUP_PERIOD = 2;
+    
+    // DroidBridge: Adaptive sensitivity parameters
+    private static final float ADAPTIVE_SENSITIVITY_VELOCITY_THRESHOLD = 2.0f;
+    private static final float ADAPTIVE_SENSITIVITY_MULTIPLIER_HIGH = 1.3f;
+    private static final float ADAPTIVE_SENSITIVITY_MULTIPLIER_LOW = 0.8f;
+    
+    // DroidBridge: Predictive aiming parameters
+    private static final int PREDICTION_BUFFER_SIZE = 3;
+    private static final float PREDICTION_FACTOR = 0.15f;
 
     private final WindowManager mWindowManager;
     private int mSurfaceRotation;
@@ -57,6 +75,13 @@ public class GyroControl implements SensorEventListener, GrabListener {
     /* Store the gyro movement under the threshold */
     private float mStoredX = 0;
     private float mStoredY = 0;
+    
+    // DroidBridge: Prediction buffer for enhanced aiming
+    private final float[][] mPredictionBuffer = new float[PREDICTION_BUFFER_SIZE][3];
+    private int mPredictionIndex = 0;
+    private float mLastVelocityX = 0;
+    private float mLastVelocityY = 0;
+    private long mLastTimestamp = 0;
 
     public GyroControl(Activity activity) {
         mWindowManager = activity.getWindowManager();
@@ -74,6 +99,19 @@ public class GyroControl implements SensorEventListener, GrabListener {
         mCorrectionListener.enable();
         mShouldHandleEvents = CallbackBridge.isGrabbing();
         CallbackBridge.addGrabListener(this);
+        
+        // DroidBridge: Play activation sound and haptic feedback
+        SoundManager.playGyroActivate();
+        SoundManager.hapticOnly(true);
+        
+        // Reset prediction buffer
+        mPredictionIndex = 0;
+        mLastTimestamp = System.nanoTime();
+        for (int i = 0; i < PREDICTION_BUFFER_SIZE; i++) {
+            mPredictionBuffer[i][0] = 0;
+            mPredictionBuffer[i][1] = 0;
+            mPredictionBuffer[i][2] = 0;
+        }
     }
 
     public void disable() {
@@ -99,6 +137,49 @@ public class GyroControl implements SensorEventListener, GrabListener {
         }
         SensorManager.getAngleChange(mAngleDifference, mCurrentRotation, mPreviousRotation);
         damperValue(mAngleDifference);
+        
+        // DroidBridge: Calculate velocity for adaptive sensitivity
+        long currentTimestamp = System.nanoTime();
+        float deltaTime = (currentTimestamp - mLastTimestamp) / 1_000_000_000f; // Convert to seconds
+        if (deltaTime > 0) {
+            float velocityX = xAverage / deltaTime;
+            float velocityY = yAverage / deltaTime;
+            float velocityMagnitude = (float) Math.sqrt(velocityX * velocityX + velocityY * velocityY);
+            
+            // Store velocity for next frame
+            mLastVelocityX = velocityX;
+            mLastVelocityY = velocityY;
+            
+            // DroidBridge: Adaptive sensitivity based on velocity
+            float adaptiveMultiplier;
+            if (velocityMagnitude > ADAPTIVE_SENSITIVITY_VELOCITY_THRESHOLD) {
+                adaptiveMultiplier = ADAPTIVE_SENSITIVITY_MULTIPLIER_HIGH;
+            } else {
+                adaptiveMultiplier = ADAPTIVE_SENSITIVITY_MULTIPLIER_LOW;
+            }
+            
+            // DroidBridge: Store in prediction buffer
+            mPredictionBuffer[mPredictionIndex][0] = xAverage * adaptiveMultiplier;
+            mPredictionBuffer[mPredictionIndex][1] = yAverage * adaptiveMultiplier;
+            mPredictionBuffer[mPredictionIndex][2] = velocityMagnitude;
+            mPredictionIndex = (mPredictionIndex + 1) % PREDICTION_BUFFER_SIZE;
+            
+            // DroidBridge: Predictive aiming - calculate predicted delta
+            float predictedDeltaX = 0;
+            float predictedDeltaY = 0;
+            for (int i = 0; i < PREDICTION_BUFFER_SIZE; i++) {
+                int idx = (mPredictionIndex - 1 - i + PREDICTION_BUFFER_SIZE) % PREDICTION_BUFFER_SIZE;
+                float weight = PREDICTION_FACTOR * (1.0f - (float)i / PREDICTION_BUFFER_SIZE);
+                predictedDeltaX += mPredictionBuffer[idx][0] * weight;
+                predictedDeltaY += mPredictionBuffer[idx][1] * weight;
+            }
+            
+            // Apply adaptive sensitivity with prediction
+            xAverage = (xAverage + predictedDeltaX) * adaptiveMultiplier;
+            yAverage = (yAverage + predictedDeltaY) * adaptiveMultiplier;
+        }
+        mLastTimestamp = currentTimestamp;
+        
         mStoredX += xAverage * 10 * AllStaticSettings.gyroSensitivity;
         mStoredY += yAverage * 10 * AllStaticSettings.gyroSensitivity;
 

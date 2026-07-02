@@ -470,7 +470,37 @@ object FPSBoostConfig {
             "-Dlog4j2.formatMsgNoLookups=true",
             "-Dfml.earlyprogresswindow=false",
             // v5 LWJGL fast path
-            "-Dorg.lwjgl.util.NoChecks=true"
+            "-Dorg.lwjgl.util.NoChecks=true",
+            // v6 DroidBridge Launcher additions - CPU and memory optimizations
+            "-XX:+UseNUMA",
+            "-XX:+UseLargePages",
+            "-XX:+OptimizeStringConcat",
+            "-XX:+UseTypeSpeculation",
+            "-XX:TypeProfileLevel=222",
+            "-XX:OnStackReplacePercentage=140",
+            "-XX:CompileThreshold=1000",
+            "-XX:BackEdgeThreshold=10000",
+            "-XX:+UseLoopPredicate",
+            "-XX:+UseCountedLoopSafepoints",
+            "-XX:LoopStripMiningIter=1000",
+            "-XX:LoopStripMiningIterShortLoop=100",
+            "-XX:+OptimizeFill",
+            // Thread affinity and scheduling optimizations
+            "-XX:+UseThreadPriorities",
+            "-XX:ThreadPriorityPolicy=42",
+            "-XX:+UseCriticalThreadPriorities",
+            // NUMA optimizations
+            "-XX:+UseNUMAInterleaving",
+            "-XX:NUMAPageScanMethod=1",
+            // Compiler optimizations for hot paths
+            "-XX:+UseInlineCaches",
+            "-XX:+InlineSynchronizedMethods",
+            "-XX:+AggressiveOpts",
+            // Memory allocation optimizations
+            "-XX:+UseTLAB",
+            "-XX:+ResizeTLAB",
+            "-XX:TLABSize=256K",
+            "-XX:MinTLABSize=128K"
         )
     }
 
