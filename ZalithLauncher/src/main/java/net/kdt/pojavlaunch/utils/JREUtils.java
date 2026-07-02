@@ -536,7 +536,7 @@ public final class JREUtils {
         final int exitCode = VMLauncher.launchJVM(userArgs.toArray(new String[0]));
         Logger.appendToLog("Java Exit code: " + exitCode);
         if (exitCode != 0) {
-            ErrorActivity.showExitMessage(activity, exitCode, false);
+            ErrorActivity.showExitMessage(activity, exitCode, false, gameVersion == null ? null : gameVersion.getGameDir().getAbsolutePath());
         }
         EventBus.getDefault().post(new JvmExitEvent(exitCode));
     }
