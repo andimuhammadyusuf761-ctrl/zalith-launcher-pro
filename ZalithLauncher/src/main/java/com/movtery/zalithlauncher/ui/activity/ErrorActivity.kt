@@ -194,6 +194,7 @@ class ErrorActivity : BaseActivity() {
         }
 
         @JvmStatic
+        @JvmOverloads
         fun showExitMessage(
             ctx: Context,
             code: Int,

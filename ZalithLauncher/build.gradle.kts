@@ -5,6 +5,7 @@ import com.github.megatronking.stringfog.plugin.StringFogExtension
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android") version "2.0.21"
+    id("org.jetbrains.kotlin.plugin.compose") version "2.0.21"
     id("stringfog")
 }
 apply(plugin = "stringfog")
@@ -182,6 +183,7 @@ android {
         prefab = true
         buildConfig = true
         viewBinding = true
+        compose = true
     }
 
     buildToolsVersion = "34.0.0"
@@ -238,6 +240,15 @@ dependencies {
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
     implementation("androidx.core:core-ktx:1.13.0")
     implementation("androidx.palette:palette-ktx:1.0.0")
+    implementation(platform("androidx.compose:compose-bom:2024.10.01"))
+    implementation("androidx.activity:activity-compose:1.9.3")
+    implementation("androidx.compose.animation:animation")
+    implementation("androidx.compose.foundation:foundation")
+    implementation("androidx.compose.material3:material3")
+    implementation("androidx.compose.material:material-icons-extended")
+    implementation("androidx.compose.ui:ui")
+    implementation("androidx.compose.ui:ui-tooling-preview")
+    debugImplementation("androidx.compose.ui:ui-tooling")
 
     implementation("com.github.duanhong169:checkerboarddrawable:1.0.2")
     implementation("com.github.PojavLauncherTeam:portrait-sdp:ed33e89cbc")
