@@ -183,6 +183,7 @@ android {
         prefab = true
         buildConfig = true
         viewBinding = true
+        dataBinding = true
         compose = true
     }
 
