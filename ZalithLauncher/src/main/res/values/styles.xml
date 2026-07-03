@@ -56,6 +56,10 @@
         <item name="strokeWidth">1dp</item>
     </style>
 
+    <!-- Base ShapeAppearanceOverlay style -->
+    <style name="ShapeAppearanceOverlay" parent="">
+    </style>
+
     <!-- Project icon shapes — from DroidBridge -->
     <style name="ShapeAppearanceOverlay.JavaLauncher">
         <item name="cornerFamily">rounded</item>
