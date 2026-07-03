@@ -2,88 +2,89 @@
 <!--
     DroidBridge-style instance list item — Material3 card.
     Used by ca.dnamobile.javalauncher.ui.instance.LauncherInstanceAdapter.
+    IDs must match exactly what LauncherInstanceAdapter.java accesses via ItemLauncherInstanceBinding.
 -->
-<com.google.android.material.card.MaterialCardView
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_marginHorizontal="0dp"
-    android:layout_marginVertical="4dp"
-    android:clickable="true"
-    android:focusable="true"
-    app:cardCornerRadius="16dp"
-    app:cardElevation="0dp"
-    app:strokeColor="?attr/colorOutlineVariant"
-    app:strokeWidth="1dp">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <LinearLayout
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/instanceCard"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
-        android:padding="12dp">
+        android:layout_marginHorizontal="0dp"
+        android:layout_marginVertical="4dp"
+        android:clickable="true"
+        android:focusable="true"
+        app:cardCornerRadius="16dp"
+        app:cardElevation="0dp"
+        app:strokeColor="?attr/colorOutlineVariant"
+        app:strokeWidth="1dp">
 
-        <!-- Instance icon -->
-        <com.google.android.material.imageview.ShapeableImageView
-            android:id="@+id/instanceIcon"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:scaleType="fitCenter"
-            android:src="@drawable/ic_instance_vanilla_24"
-            app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.JavaLauncher.ProjectIcon" />
-
-        <!-- Instance info -->
         <LinearLayout
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:layout_marginStart="12dp"
-            android:orientation="vertical">
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:padding="12dp">
 
-            <TextView
-                android:id="@+id/instanceName"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:ellipsize="end"
-                android:maxLines="1"
-                android:text="Instance Name"
-                android:textAppearance="@style/TextAppearance.Material3.BodyLarge"
-                android:textStyle="bold" />
+            <!-- Instance icon — id matches binding.imageInstanceIcon -->
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/imageInstanceIcon"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_instance_vanilla_24"
+                app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.JavaLauncher.ProjectIcon" />
 
-            <TextView
-                android:id="@+id/instanceVersion"
-                android:layout_width="wrap_content"
+            <!-- Instance info -->
+            <LinearLayout
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="2dp"
-                android:ellipsize="end"
-                android:maxLines="1"
-                android:text="Minecraft 1.20.1"
-                android:textAppearance="@style/TextAppearance.Material3.BodySmall" />
+                android:layout_weight="1"
+                android:layout_marginStart="12dp"
+                android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/instanceLastPlayed"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="2dp"
-                android:text="Never played"
-                android:textAppearance="@style/TextAppearance.Material3.BodySmall" />
+                <!-- binding.textInstanceName -->
+                <TextView
+                    android:id="@+id/textInstanceName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:textAppearance="@style/TextAppearance.Material3.BodyLarge"
+                    android:textStyle="bold" />
+
+                <!-- binding.textInstanceMeta (loader · version · type · date) -->
+                <TextView
+                    android:id="@+id/textInstanceMeta"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:textAppearance="@style/TextAppearance.Material3.BodySmall" />
+
+                <!-- binding.textInstanceState (Installed / Shared install) -->
+                <TextView
+                    android:id="@+id/textInstanceState"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:textAppearance="@style/TextAppearance.Material3.BodySmall" />
+            </LinearLayout>
+
+            <!-- Play button — ImageButton so setImageResource() works; id = buttonDeleteInstance
+                 (named after original DroidBridge pattern; repurposed as quick-play) -->
+            <ImageButton
+                android:id="@+id/buttonDeleteInstance"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Play instance"
+                android:padding="8dp"
+                android:src="@drawable/ic_play_arrow" />
+
         </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
 
-        <!-- Play / more options button -->
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/instancePlayButton"
-            style="@style/Widget.Material3.Button.IconButton"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:minWidth="0dp"
-            android:minHeight="0dp"
-            android:padding="0dp"
-            android:contentDescription="Play"
-            android:text=""
-            app:icon="@drawable/ic_play_arrow"
-            app:iconGravity="textStart"
-            app:iconPadding="0dp" />
-
-    </LinearLayout>
-</com.google.android.material.card.MaterialCardView>
+</layout>
