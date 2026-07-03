@@ -57,6 +57,11 @@
     </style>
 
     <!-- Project icon shapes — from DroidBridge -->
+    <style name="ShapeAppearanceOverlay.JavaLauncher">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">8dp</item>
+    </style>
+
     <style name="ShapeAppearanceOverlay.JavaLauncher.ProjectIcon">
         <item name="cornerFamily">rounded</item>
         <item name="cornerSize">18dp</item>
