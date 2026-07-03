@@ -750,11 +750,6 @@
     <string name="button_refresh_microsoft_skin">Refresh skin</string>
     <string name="microsoft_skin_change_button">Change Skin</string>
     <string name="button_sign_out">Sign out</string>
-    <string name="player_model_preview">Player model preview</string>
-    <string name="account_profile_controls_hint">Skin and cape controls only appear when a Microsoft profile session is available.</string>
-    <string name="main_player_head_signed_in">Signed-in player profile. Opens account settings.</string>
-    <string name="main_player_head_signed_out">Signed out. Opens account settings.</string>
-
     <!-- Renderer settings -->
     <string name="renderer_settings_title">Renderer</string>
     <string name="renderer_settings_summary">Choose the renderer used when launching Minecraft. Different renderers support different Minecraft versions and mods.</string>
@@ -772,17 +767,6 @@
     <string name="button_clear_renderer_plugin_cache">Clear renderer plugin cache</string>
     <string name="button_grant_renderer_storage_access">Grant renderer storage access</string>
     <string name="button_download_renderers">Download renderers</string>
-    <string name="settings_renderer_resolution_scale_title">Resolution Scale</string>
-    <string name="settings_renderer_resolution_scale_summary">Lower values improve performance; higher values improve image quality. Changes apply the next time Minecraft starts.</string>
-    <string name="settings_renderer_resolution_scale_value">Resolution scale: %1$d%%</string>
-    <string name="settings_renderer_resolution_scale_value_placeholder">Resolution scale: 100%%</string>
-    <string name="settings_renderer_resolution_scale_dialog_message">Enter a value from %1$d%% to %2$d%%. 100%% uses the normal screen size.</string>
-    <string name="settings_renderer_full_screen_on">Force fullscreen mode: On</string>
-    <string name="settings_renderer_full_screen_off">Force fullscreen mode: Off</string>
-    <string name="settings_renderer_full_screen_summary">When enabled, Minecraft uses immersive fullscreen and ignores safe areas like notches and punch-holes.</string>
-    <string name="settings_renderer_avoid_rounded_corners_on">Avoid rounded display corners: On</string>
-    <string name="settings_renderer_avoid_rounded_corners_off">Avoid rounded display corners: Off</string>
-    <string name="settings_renderer_avoid_rounded_corners_summary">Allows the gameview to ignore rounded corners of your device by adding a small inset.</string>
     <string name="settings_renderer_ignore_notch_off">Ignore display notch/cutout: Off</string>
     <string name="settings_renderer_ignore_notch_on">Ignore display notch/cutout: On</string>
     <string name="settings_renderer_ignore_notch_summary">Extends the game into the display cutout/notch area for more screen space.</string>
@@ -860,25 +844,6 @@
     <string name="button_open_droidbridge_privacy_policy">DroidBridge Privacy Policy</string>
     <string name="button_open_droidbridge_terms">DroidBridge Terms of Use</string>
     <string name="button_open_droidbridge_license">Open source licenses</string>
-
-    <!-- Skin/cape additions -->
-    <string name="microsoft_cape_change_button">Change Cape</string>
-    <string name="microsoft_cape_loading_button">Loading capes…</string>
-    <string name="microsoft_cape_saving_button">Saving cape…</string>
-    <string name="microsoft_cape_loading">Loading owned capes…</string>
-    <string name="microsoft_cape_requires_account">Sign in with a Microsoft account before changing capes.</string>
-    <string name="microsoft_cape_load_failed">Could not load capes: %1$s</string>
-    <string name="microsoft_cape_save_failed">Could not update cape: %1$s</string>
-    <string name="microsoft_cape_save_success">Cape updated. It may take a moment to appear everywhere.</string>
-    <string name="microsoft_cape_dialog_title">Change cape</string>
-    <string name="microsoft_cape_dialog_summary">Choose one of the official capes owned by %1$s, or hide the current cape.</string>
-    <string name="microsoft_cape_owned_title">Owned capes</string>
-    <string name="microsoft_cape_empty">This Microsoft account did not return any owned capes.</string>
-    <string name="microsoft_cape_none_title">No cape</string>
-    <string name="microsoft_cape_none_summary">Hide the active cape on the Minecraft profile.</string>
-    <string name="microsoft_cape_active_badge">Active cape</string>
-    <string name="microsoft_cape_inactive_badge">Available</string>
-    <string name="microsoft_cape_apply">Apply</string>
 
     <!-- Splash screen -->
     <string name="splash_screen_storage_unavailable">Storage is not available. Please check permissions.</string>
