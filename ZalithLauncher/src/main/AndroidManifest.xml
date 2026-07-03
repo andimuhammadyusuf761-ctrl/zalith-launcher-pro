@@ -126,6 +126,58 @@
             <property android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
                 android:value="This application is intended to run a 3rd-party piece of software which cannot be managed using the activity's saved instance state. This service is used for background persistence of this piece of software."/>
         </service>
+
+        <!-- ================================================================
+             DroidBridge Launcher activities and providers (ported from DroidBridge)
+             ================================================================ -->
+        <activity
+            android:name="ca.dnamobile.javalauncher.LauncherSettingsActivity"
+            android:exported="false"
+            android:theme="@style/DroidBridgeSettingsTheme"
+            android:configChanges="keyboardHidden|orientation|screenSize|smallestScreenSize|screenLayout|keyboard|navigation"
+            android:screenOrientation="sensorLandscape"
+            android:windowSoftInputMode="adjustResize" />
+
+        <activity
+            android:name="ca.dnamobile.javalauncher.controls.ControlsActivity"
+            android:exported="false"
+            android:configChanges="keyboardHidden|orientation|screenSize|smallestScreenSize|screenLayout|keyboard|navigation"
+            android:screenOrientation="sensorLandscape" />
+
+        <activity
+            android:name="ca.dnamobile.javalauncher.controls.ControlsEditorActivity"
+            android:exported="false"
+            android:configChanges="keyboardHidden|orientation|screenSize|smallestScreenSize|screenLayout|keyboard|navigation"
+            android:screenOrientation="sensorLandscape" />
+
+        <activity
+            android:name="ca.dnamobile.javalauncher.ErrorActivity"
+            android:exported="false"
+            android:configChanges="keyboardHidden|orientation|screenSize|smallestScreenSize|screenLayout|keyboard|navigation"
+            android:screenOrientation="sensorLandscape" />
+
+        <activity
+            android:name="ca.dnamobile.javalauncher.ModpackUpdateDetailsActivity"
+            android:exported="false"
+            android:configChanges="keyboardHidden|orientation|screenSize|smallestScreenSize|screenLayout|keyboard|navigation"
+            android:screenOrientation="sensorLandscape" />
+
+        <activity
+            android:name="ca.dnamobile.javalauncher.settings.SimpleVoiceChatPermissionActivity"
+            android:exported="false"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:screenOrientation="sensorLandscape" />
+
+        <provider
+            android:name="ca.dnamobile.javalauncher.storage.JavaLauncherDocumentsProvider"
+            android:authorities="${applicationId}.droidbridge_documents"
+            android:exported="true"
+            android:grantUriPermissions="true"
+            android:permission="android.permission.MANAGE_DOCUMENTS">
+            <intent-filter>
+                <action android:name="android.content.action.DOCUMENTS_PROVIDER" />
+            </intent-filter>
+        </provider>
     </application>
     <queries>
         <package android:name="net.kdt.pojavlaunch.ffmpeg"/>

@@ -733,4 +733,383 @@
     <!-- Sponsorship Related -->
     <string name="request_sponsorship_title">Support My Development</string>
     <string name="request_sponsorship_message">Most of the content in this software is developed and maintained by me alone. If you find this software helpful and are in a position to do so, I hope you will consider sponsoring me to give me more motivation to continue developing and improving it. Thank you for your support!</string>
+
+    <!-- ================================================================
+         DroidBridge-style settings strings (ported from DroidBridge Launcher)
+         ================================================================ -->
+
+    <!-- Account -->
+    <string name="settings_account_title">Account</string>
+    <string name="status_signed_out">Signed out</string>
+    <string name="custom_skin_status_none">No custom skin</string>
+    <string name="button_sign_in">Sign In</string>
+    <string name="button_add_microsoft_account">Add another Microsoft account</string>
+    <string name="button_manage_microsoft_accounts">Manage Microsoft accounts</string>
+    <string name="button_use_microsoft_account">Use Microsoft account</string>
+    <string name="button_manage_offline_accounts">Manage offline accounts</string>
+    <string name="button_refresh_microsoft_skin">Refresh skin</string>
+    <string name="microsoft_skin_change_button">Change Skin</string>
+    <string name="button_sign_out">Sign out</string>
+    <string name="player_model_preview">Player model preview</string>
+    <string name="account_profile_controls_hint">Skin and cape controls only appear when a Microsoft profile session is available.</string>
+    <string name="main_player_head_signed_in">Signed-in player profile. Opens account settings.</string>
+    <string name="main_player_head_signed_out">Signed out. Opens account settings.</string>
+
+    <!-- Renderer settings -->
+    <string name="renderer_settings_title">Renderer</string>
+    <string name="renderer_settings_summary">Choose the renderer used when launching Minecraft. Different renderers support different Minecraft versions and mods.</string>
+    <string name="render_surface_section_title">Render surface</string>
+    <string name="render_surface_texture_view">Use TextureView (for Android 14+ compatibility)</string>
+    <string name="vulkan_driver_settings_title">Vulkan driver</string>
+    <string name="use_system_vulkan_driver_off">Use system Vulkan driver: Off</string>
+    <string name="use_system_vulkan_driver_on">Use system Vulkan driver: On</string>
+    <string name="use_system_vulkan_driver_summary">When enabled, uses the system-level Vulkan driver instead of a bundled or plugin driver.</string>
+    <string name="use_opengl_26_plus_off">Use OpenGL for Minecraft 26+: Off</string>
+    <string name="use_opengl_26_plus_on">Use OpenGL for Minecraft 26+: On</string>
+    <string name="use_opengl_26_plus_summary">Forces GL4ES or the selected OpenGL renderer for Minecraft 1.26 and newer, which use Vulkan by default.</string>
+    <string name="button_refresh_renderers">Refresh renderers</string>
+    <string name="button_open_renderer_plugin_settings">Renderer plugin settings</string>
+    <string name="button_clear_renderer_plugin_cache">Clear renderer plugin cache</string>
+    <string name="button_grant_renderer_storage_access">Grant renderer storage access</string>
+    <string name="button_download_renderers">Download renderers</string>
+    <string name="settings_renderer_resolution_scale_title">Resolution Scale</string>
+    <string name="settings_renderer_resolution_scale_summary">Lower values improve performance; higher values improve image quality. Changes apply the next time Minecraft starts.</string>
+    <string name="settings_renderer_resolution_scale_value">Resolution scale: %1$d%%</string>
+    <string name="settings_renderer_resolution_scale_value_placeholder">Resolution scale: 100%%</string>
+    <string name="settings_renderer_resolution_scale_dialog_message">Enter a value from %1$d%% to %2$d%%. 100%% uses the normal screen size.</string>
+    <string name="settings_renderer_full_screen_on">Force fullscreen mode: On</string>
+    <string name="settings_renderer_full_screen_off">Force fullscreen mode: Off</string>
+    <string name="settings_renderer_full_screen_summary">When enabled, Minecraft uses immersive fullscreen and ignores safe areas like notches and punch-holes.</string>
+    <string name="settings_renderer_avoid_rounded_corners_on">Avoid rounded display corners: On</string>
+    <string name="settings_renderer_avoid_rounded_corners_off">Avoid rounded display corners: Off</string>
+    <string name="settings_renderer_avoid_rounded_corners_summary">Allows the gameview to ignore rounded corners of your device by adding a small inset.</string>
+    <string name="settings_renderer_ignore_notch_off">Ignore display notch/cutout: Off</string>
+    <string name="settings_renderer_ignore_notch_on">Ignore display notch/cutout: On</string>
+    <string name="settings_renderer_ignore_notch_summary">Extends the game into the display cutout/notch area for more screen space.</string>
+
+    <!-- Controller settings -->
+    <string name="controller_settings_title">Controls</string>
+    <string name="controller_touch_controls_title">Touch controls</string>
+    <string name="controller_touch_controls_summary">Manage your on-screen touch control layouts, including the DroidBridge default layout.</string>
+    <string name="button_manage_touch_controls">Manage touch controls</string>
+    <string name="controller_touch_controls_enabled_on">Touch controls: On</string>
+    <string name="controller_touch_controls_enabled_off">Touch controls: Off</string>
+    <string name="controller_minecraft_touch_gestures_on">Minecraft touch gestures: On</string>
+    <string name="controller_minecraft_touch_gestures_off">Minecraft touch gestures: Off</string>
+    <string name="controller_minecraft_touch_gestures_summary">Enables Minecraft\'s built-in touch gesture support (swipe, pinch, etc.) alongside your custom touch controls.</string>
+    <string name="controller_double_tap_to_drop_off">Double-tap to drop item: Off</string>
+    <string name="controller_double_tap_to_drop_on">Double-tap to drop item: On</string>
+    <string name="controller_double_tap_to_drop_summary">When enabled, double-tapping an item slot in your inventory drops one item on the ground.</string>
+    <string name="controller_built_in_title">Built-in gamepad</string>
+    <string name="controller_built_in_summary">Edit the button mapping for physical gamepad/controller input.</string>
+    <string name="button_edit_builtin_controller">Edit built-in controller mapping</string>
+    <string name="controller_force_sdl_off">Force SDL controller bridge: Off</string>
+    <string name="controller_force_sdl_on">Force SDL controller bridge: On</string>
+    <string name="controller_force_sdl_summary">Forces all gamepad input through the SDL controller bridge regardless of mod compatibility settings.</string>
+
+    <!-- Launcher settings -->
+    <string name="settings_launcher_title">Launcher</string>
+    <string name="settings_memory_title">Memory</string>
+    <string name="memory_allocated_placeholder">Allocated memory: — MB</string>
+    <string name="memory_available_placeholder">Available memory: — MB</string>
+    <string name="log_keep_history">Keep game log history</string>
+    <string name="launcher_logs_on">Launcher diagnostic logs: On</string>
+    <string name="launcher_logs_off">Launcher diagnostic logs: Off</string>
+    <string name="launcher_logs_summary">Write extra launcher-side diagnostic logs. Disable to save storage space.</string>
+    <string name="install_notifications_off">Install notifications: Off</string>
+    <string name="install_notifications_on">Install notifications: On</string>
+    <string name="install_notifications_summary_permission_needed">Notification permission needed to show install progress notifications.</string>
+    <string name="install_notifications_summary">Shows a progress notification while Minecraft versions are being installed.</string>
+    <string name="settings_simple_voice_chat_title">Simple Voice Chat support</string>
+    <string name="settings_simple_voice_chat_summary">Simple Voice Chat requires microphone permission. Grant it here to allow voice chat in supported modpacks.</string>
+    <string name="simple_voice_chat_microphone_status_missing">Microphone permission: Not granted</string>
+    <string name="simple_voice_chat_microphone_status_granted">Microphone permission: Granted</string>
+    <string name="simple_voice_chat_microphone_button_enable">Enable microphone permission</string>
+    <string name="game_settings_button_on">In-game settings button: On</string>
+    <string name="game_settings_button_off">In-game settings button: Off</string>
+    <string name="game_settings_button_summary">Shows a floating settings button while Minecraft is running to quickly open launcher settings.</string>
+    <string name="android_back_in_game_menu_on">Android back opens in-game menu: On</string>
+    <string name="android_back_in_game_menu_off">Android back opens in-game menu: Off</string>
+    <string name="android_back_in_game_menu_summary">When enabled, pressing the Android back gesture opens Minecraft\'s in-game pause menu instead of exiting.</string>
+    <string name="app_orientation_title">App orientation</string>
+    <string name="app_orientation_auto_rotate">Auto-rotate</string>
+    <string name="app_orientation_landscape">Landscape</string>
+    <string name="app_orientation_reverse_landscape">Reverse landscape</string>
+    <string name="app_orientation_summary_auto">The app follows your device\'s auto-rotate setting.</string>
+    <string name="game_log_overlay_off">Game log overlay: Off</string>
+    <string name="game_log_overlay_on">Game log overlay: On</string>
+    <string name="game_log_overlay_summary">Shows a scrollable log overlay on top of the running game for debugging.</string>
+    <string name="button_share_latest_log">Share latest game log</string>
+    <string name="button_share_launcher_logs">Share launcher diagnostic logs</string>
+    <string name="button_cleanup_game_files">Clean up game files</string>
+    <string name="button_reinstall_runtime">Reinstall components and JREs</string>
+    <string name="button_install_custom_runtime">Install custom runtime</string>
+
+    <!-- Instance settings -->
+    <string name="settings_instance_title">Instances</string>
+    <string name="shared_installs_show">Show shared installs: Off</string>
+    <string name="shared_installs_summary">Shared installs are base game versions reused by multiple modded instances.</string>
+    <string name="inherited_vanilla_remove_off">Remove base Minecraft after loader install: Off</string>
+    <string name="inherited_vanilla_remove_on">Remove base Minecraft after loader install: On</string>
+    <string name="inherited_vanilla_remove_summary">When a mod loader is installed on top of a vanilla version, automatically remove the standalone vanilla entry from the list.</string>
+
+    <!-- Privacy -->
+    <string name="settings_privacy_policy_title">Legal</string>
+    <string name="settings_privacy_policy_summary">DroidBridge Launcher is not an official Minecraft product. It is not approved by or associated with Mojang, Microsoft, or Xbox. You must own a valid copy of Minecraft: Java Edition to use this launcher.</string>
+    <string name="button_open_minecraft_eula">Minecraft EULA</string>
+    <string name="button_open_droidbridge_privacy_policy">DroidBridge Privacy Policy</string>
+    <string name="button_open_droidbridge_terms">DroidBridge Terms of Use</string>
+    <string name="button_open_droidbridge_license">Open source licenses</string>
+
+    <!-- Skin/cape additions -->
+    <string name="microsoft_cape_change_button">Change Cape</string>
+    <string name="microsoft_cape_loading_button">Loading capes…</string>
+    <string name="microsoft_cape_saving_button">Saving cape…</string>
+    <string name="microsoft_cape_loading">Loading owned capes…</string>
+    <string name="microsoft_cape_requires_account">Sign in with a Microsoft account before changing capes.</string>
+    <string name="microsoft_cape_load_failed">Could not load capes: %1$s</string>
+    <string name="microsoft_cape_save_failed">Could not update cape: %1$s</string>
+    <string name="microsoft_cape_save_success">Cape updated. It may take a moment to appear everywhere.</string>
+    <string name="microsoft_cape_dialog_title">Change cape</string>
+    <string name="microsoft_cape_dialog_summary">Choose one of the official capes owned by %1$s, or hide the current cape.</string>
+    <string name="microsoft_cape_owned_title">Owned capes</string>
+    <string name="microsoft_cape_empty">This Microsoft account did not return any owned capes.</string>
+    <string name="microsoft_cape_none_title">No cape</string>
+    <string name="microsoft_cape_none_summary">Hide the active cape on the Minecraft profile.</string>
+    <string name="microsoft_cape_active_badge">Active cape</string>
+    <string name="microsoft_cape_inactive_badge">Available</string>
+    <string name="microsoft_cape_apply">Apply</string>
+
+    <!-- Splash screen -->
+    <string name="splash_screen_storage_unavailable">Storage is not available. Please check permissions.</string>
+    <string name="splash_screen_failed">Launch preparation failed: %1$s</string>
+
+    <!-- DroidBridge instance/backup -->
+    <string name="droidbridge_settings_title">DroidBridge Settings</string>
+
+    <!-- Offline account management -->
+    <string name="offline_account_skin_active">Custom skin: %1$s</string>
+    <string name="offline_account_row_skin">Skin: %1$s model</string>
+    <string name="offline_account_skin_current">Current skin: %1$s model</string>
+    <string name="offline_account_enabled">%1$s is now the active account.</string>
+    <string name="offline_account_invalid">Invalid username. Use 3–16 characters: letters, digits, and underscores only.</string>
+    <string name="offline_account_delete_title">Delete %1$s?</string>
+    <string name="offline_account_delete_message">This offline account and its associated skin will be removed. This cannot be undone.</string>
+    <string name="offline_account_label_skin">Offline skin</string>
+    <string name="offline_account_label_no_skin">No custom skin</string>
+
+    <!-- Account status descriptions -->
+    <string name="status_signed_in">Signed in as %1$s</string>
+    <string name="status_offline_account_with_microsoft">Offline as %1$s (Microsoft: %2$s)</string>
+    <string name="status_offline_account">Offline account: %1$s</string>
+
+    <!-- Microsoft skin upload -->
+    <string name="microsoft_skin_change_message">Change skin for %1$s?</string>
+    <string name="microsoft_skin_uploading">Uploading skin…</string>
+    <string name="microsoft_skin_upload_success">Skin updated successfully. It may take a moment to appear everywhere.</string>
+    <string name="microsoft_skin_upload_failed">Skin upload failed: %1$s</string>
+
+    <!-- Renderer plugin strings -->
+    <string name="renderer_plugin_cache_cleared">Renderer plugin cache cleared.</string>
+    <string name="renderer_plugin_refreshing">Refreshing renderer list…</string>
+
+    <!-- Game log strings -->
+    <string name="log_share_title">Share log</string>
+    <string name="log_keep_days">Keep logs for %1$d days</string>
+    <string name="log_cleanup_done">Log cleanup complete.</string>
+
+    <!-- Memory strings -->
+    <string name="memory_allocated">Allocated: %1$d MB</string>
+    <string name="memory_available">Available: %1$d MB</string>
+    <string name="memory_set_prompt">Enter memory in MB (%1$d – %2$d):</string>
+
+    <!-- Storage / backup -->
+    <string name="storage_location_current">Storage location: %1$s</string>
+    <string name="storage_backup_creating">Creating backup…</string>
+    <string name="storage_backup_done">Backup saved to: %1$s</string>
+    <string name="storage_backup_failed">Backup failed: %1$s</string>
+    <string name="storage_restore_prompt">Select a backup file to restore.</string>
+
+    <!-- Launcher update -->
+    <string name="update_available_title">Update available</string>
+    <string name="update_available_message">Version %1$s is available. You are running %2$s.</string>
+    <string name="update_no_update">You are on the latest version.</string>
+    <string name="update_checking">Checking for updates…</string>
+    <string name="update_check_failed">Update check failed: %1$s</string>
+
+    <!-- Mod compatibility patches -->
+    <string name="modcompat_discord_rpc_on">Discord Rich Presence patch: On</string>
+    <string name="modcompat_discord_rpc_off">Discord Rich Presence patch: Off</string>
+    <string name="modcompat_discord_rpc_summary">Patches mods that use Discord RPC to work correctly on Android.</string>
+    <string name="modcompat_ffmpeg_on">FFmpeg patch: On</string>
+    <string name="modcompat_ffmpeg_off">FFmpeg patch: Off</string>
+    <string name="modcompat_ffmpeg_summary">Enables FFmpeg-based video rendering for mods that require it (e.g. Replay Mod).</string>
+
+    <!-- Common actions (DroidBridge) -->
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
+
+    <!-- Custom skin states (DroidBridge) -->
+    <string name="custom_skin_status_locked">Custom skins require signing in with Microsoft at least once.</string>
+    <string name="custom_skin_status_microsoft">Microsoft profile skin (cannot set a custom skin while signed in).</string>
+
+    <!-- Install notifications extras -->
+    <string name="install_notifications_summary_enabled">Shows progress notifications during installs.</string>
+    <string name="install_notifications_summary_old_android">Install notifications require Android 8.0 or higher.</string>
+
+    <!-- Memory dialog -->
+    <string name="memory_allocated_value">Allocated: %1$d MB</string>
+    <string name="memory_available_summary">Available system RAM: %1$d MB</string>
+    <string name="memory_dialog_title">Allocated memory</string>
+    <string name="memory_dialog_message">Enter a value in MB between %1$d and %2$d. More memory can improve performance but may cause instability.</string>
+
+    <!-- Microsoft account -->
+    <string name="microsoft_account_restored">Microsoft account restored: %1$s</string>
+    <string name="msg_configure_client_id">A Microsoft Azure client ID is required to enable Microsoft sign-in. Please configure it in the launcher settings.</string>
+    <string name="msg_sign_out_success">Signed out successfully.</string>
+    <string name="sign_out_confirm_title">Sign out?</string>
+    <string name="sign_out_confirm_message">You will need to sign in again to access your Microsoft profile and online features.</string>
+    <string name="status_microsoft_remembered">Microsoft account on file: %1$s</string>
+    <string name="status_signed_out_offline_unlocked">Signed out (offline accounts unlocked).</string>
+
+    <!-- Microsoft skin flow -->
+    <string name="microsoft_skin_change_title">Change skin</string>
+    <string name="microsoft_skin_invalid">The selected file is not a valid Minecraft skin PNG.</string>
+    <string name="microsoft_skin_needs_refresh">Skin data is stale — please refresh first.</string>
+    <string name="microsoft_skin_pick">Pick skin PNG…</string>
+    <string name="microsoft_skin_refreshing">Refreshing skin data…</string>
+    <string name="microsoft_skin_requires_account">A Microsoft account must be active to change skins.</string>
+    <string name="microsoft_skin_upload">Upload skin</string>
+    <string name="microsoft_skin_upload_message">Upload this skin PNG to your Microsoft profile? This replaces your current skin.</string>
+    <string name="microsoft_skin_upload_title">Upload skin to Microsoft profile</string>
+    <string name="microsoft_skin_variant_classic">Classic (Steve) model</string>
+    <string name="microsoft_skin_variant_slim">Slim (Alex) model</string>
+
+    <!-- Notification permission flow -->
+    <string name="notification_permission_denied_title">Notification permission denied</string>
+    <string name="notification_permission_denied_message">Without notification permission, install progress will not be shown while the app is in the background. You can grant it in System Settings.</string>
+    <string name="notification_permission_denied_toast">Notification permission denied.</string>
+    <string name="notification_permission_enabled_toast">Notification permission granted.</string>
+    <string name="notification_permission_open_settings">Open System Settings</string>
+
+    <!-- Offline account UI -->
+    <string name="offline_account_active_badge">Active</string>
+    <string name="offline_account_active_button">Active account</string>
+    <string name="offline_account_add">Add offline account</string>
+    <string name="offline_account_choose_skin">Choose skin PNG…</string>
+    <string name="offline_account_clear_skin">Remove custom skin</string>
+    <string name="offline_account_create">Create</string>
+    <string name="offline_account_create_title">Create offline account</string>
+    <string name="offline_account_delete_button">Delete account</string>
+    <string name="offline_account_edit_button">Edit</string>
+    <string name="offline_account_edit_summary">Change name or custom skin</string>
+    <string name="offline_account_edit_title">Edit offline account</string>
+    <string name="offline_account_name_hint">Minecraft username (3–16 characters)</string>
+    <string name="offline_account_row_no_skin">No custom skin</string>
+    <string name="offline_account_save">Save</string>
+    <string name="offline_accounts_dialog_summary">Offline accounts work without an internet connection but cannot access online features.</string>
+    <string name="offline_accounts_empty">No offline accounts yet. Tap \'Add\' to create one.</string>
+    <string name="offline_account_skin_none">No custom skin</string>
+    <string name="offline_account_skin_selected">Custom skin selected</string>
+    <string name="offline_accounts_section_title">Offline accounts</string>
+    <string name="offline_accounts_title">Manage offline accounts</string>
+    <string name="offline_account_use">Use this account</string>
+    <string name="offline_locked_title">Offline accounts locked</string>
+    <string name="offline_locked_message">Sign in with a Microsoft account at least once to unlock offline account support.</string>
+
+    <!-- Renderer extras -->
+    <string name="renderer_none_found">No renderers found. Tap \'Download\' to install one.</string>
+    <string name="render_surface_surface_view">Use SurfaceView (legacy, may fix black-screen issues)</string>
+
+    <!-- Launcher folder -->
+    <string name="launcher_folder_value">Storage: %1$s</string>
+
+    <!-- Shared installs -->
+    <string name="shared_installs_hide">Show shared installs: Off</string>
+
+    <!-- Simple Voice Chat permission flow -->
+    <string name="simple_voice_chat_microphone_already_granted">Microphone permission already granted.</string>
+    <string name="simple_voice_chat_microphone_button_enabled">Microphone permission enabled</string>
+    <string name="simple_voice_chat_microphone_denied_message">Microphone permission was denied. Grant it in System Settings to use Simple Voice Chat.</string>
+    <string name="simple_voice_chat_microphone_title">Simple Voice Chat microphone permission</string>
+    <string name="simple_voice_chat_open_app_settings">Open App Settings</string>
+    <string name="simple_voice_chat_permission_denied_toast">Microphone permission denied.</string>
+    <string name="simple_voice_chat_permission_granted_toast">Microphone permission granted.</string>
+
+    <!-- Vulkan driver -->
+    <string name="app_name">Zalith Launcher</string>
+    <string name="vulkan_driver_description_value">%1$s — %2$s</string>
+
+    <!-- Use OpenGL for 26+ (formatted value) -->
+    <string name="use_opengl_26_plus_value">Use OpenGL for Minecraft 26+: %1$s</string>
+
+    <!-- Create instance dialog -->
+    <string name="create_instance_button">Create instance</string>
+    <string name="create_instance_dialog_subtitle">Choose a Minecraft version and optional mod loader.</string>
+    <string name="create_instance_fabric_summary">Fabric — lightweight modding for modern Minecraft</string>
+    <string name="create_instance_forge_summary">Forge — the most popular modding platform</string>
+    <string name="create_instance_game_version_label">Minecraft version</string>
+    <string name="create_instance_game_version_summary">Select the Minecraft version to install</string>
+    <string name="create_instance_isolated_checkbox">Isolated game directory</string>
+    <string name="create_instance_isolated_summary">Each instance has its own mods, saves, and config folder</string>
+    <string name="create_instance_loader_label">Mod loader</string>
+    <string name="create_instance_loader_section_summary">Optional: install a mod loader on top of the selected Minecraft version</string>
+    <string name="create_instance_loader_version_auto">Auto (latest compatible)</string>
+    <string name="create_instance_loader_version_error">Failed to load loader versions</string>
+    <string name="create_instance_loader_version_label">Loader version</string>
+    <string name="create_instance_loader_version_loaded">%1$d versions available</string>
+    <string name="create_instance_loader_version_loading">Loading versions…</string>
+    <string name="create_instance_loader_version_none">No loader selected</string>
+    <string name="create_instance_loader_version_required">Select a loader version to continue</string>
+    <string name="create_instance_loader_version_selected">%1$s selected</string>
+    <string name="create_instance_loader_version_summary">Choose the mod loader version to install</string>
+    <string name="create_instance_loader_version_vanilla">Vanilla (no mod loader)</string>
+    <string name="create_instance_name_already_exists">An instance with this name already exists.</string>
+    <string name="create_instance_name_hint">Instance name</string>
+    <string name="create_instance_name_label">Name</string>
+    <string name="create_instance_neoforge_summary">NeoForge — modern continuation of Forge</string>
+    <string name="create_instance_no_versions">No Minecraft versions found. Check your internet connection.</string>
+    <string name="create_instance_per_instance_summary">This instance has its own isolated game directory</string>
+    <string name="create_instance_remove_icon">Remove icon</string>
+
+    <!-- Add storage location -->
+    <string name="button_add_storage_location">Add storage location</string>
+
+    <!-- Storage location management -->
+    <string name="storage_locations_title">Game storage</string>
+    <string name="storage_locations_summary">Choose where game files are stored on this device.</string>
+    <string name="storage_locations_choose_title">Choose storage location</string>
+    <string name="storage_locations_choose_summary">Select the folder where Minecraft files will be saved.</string>
+    <string name="storage_location_delete_action">Remove location</string>
+
+    <!-- Splash / setup screen progress -->
+    <string name="settings_title">Settings</string>
+    <string name="splash_screen_checking">Checking components…</string>
+    <string name="splash_screen_checking_item">Checking: %1$s</string>
+    <string name="splash_screen_installing_item">Installing: %1$s</string>
+    <string name="splash_screen_finalizing">Finalizing…</string>
+    <string name="splash_screen_done">Ready to play!</string>
+    <string name="splash_screen_jre_8">Java 8 runtime</string>
+    <string name="splash_screen_jre_17">Java 17 runtime</string>
+    <string name="splash_screen_jre_21">Java 21 runtime</string>
+    <string name="splash_screen_jre_25">Java 25 runtime</string>
+
+    <!-- Instance metadata -->
+    <string name="instance_state_shared">Shared install</string>
+    <string name="instance_meta_value">%1$s · %2$s</string>
+    <string name="instance_meta_shared_value">%1$s · Shared</string>
+
+    <!-- Version list tabs -->
+    <string name="version_tab_release">Release</string>
+    <string name="version_tab_snapshot">Snapshot</string>
+    <string name="version_tab_beta">Old Beta</string>
+    <string name="version_tab_alpha">Old Alpha</string>
+    <string name="version_state_installed">Installed</string>
+
+    <!-- Create instance dialog extras -->
+    <string name="create_instance_title">New instance</string>
+    <string name="create_instance_select_icon">Select icon</string>
+    <string name="create_instance_version_type_label">Show version types</string>
+
+
 </resources>
