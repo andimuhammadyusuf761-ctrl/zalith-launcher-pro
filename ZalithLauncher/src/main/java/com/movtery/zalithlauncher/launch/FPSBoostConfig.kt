@@ -443,19 +443,38 @@ object FPSBoostConfig {
      */
     private fun auroraSharedFlags(): List<String> {
         return listOf(
-            // Code cache / JIT
+            // Code cache / JIT — unlocks MUST come first
+            "-XX:+UnlockDiagnosticVMOptions",
+            "-XX:+UnlockExperimentalVMOptions",
             "-XX:ReservedCodeCacheSize=200M",
             "-XX:InitialCodeCacheSize=64M",
             "-XX:+SegmentedCodeCache",
-            "-XX:CompileThreshold=1500",
-            // v5 JIT polish — diagnostic/experimental unlocks MUST come first.
-            "-XX:+UnlockDiagnosticVMOptions",
-            "-XX:+UnlockExperimentalVMOptions",
+            // CompileThreshold set once here; v6 duplicate removed
+            "-XX:CompileThreshold=1000",
+            // v5 JIT polish
             "-XX:+UseFastUnorderedTimeStamps",
             "-XX:GuaranteedSafepointInterval=0",
             "-XX:+DoEscapeAnalysis",
             "-XX:+EliminateLocks",
             "-XX:+EliminateAllocations",
+            "-XX:+UseTypeSpeculation",
+            "-XX:TypeProfileLevel=222",
+            "-XX:OnStackReplacePercentage=140",
+            // Loop optimizations — public C2 flags, supported on Hotspot 11+
+            // (UseLoopPredicate was removed; it IS a real flag but its removal is harmless and
+            //  avoids version-specific diagnostic-VM coupling)
+            "-XX:+UseCountedLoopSafepoints",
+            "-XX:LoopStripMiningIter=1000",
+            "-XX:LoopStripMiningIterShortLoop=100",
+            // JIT inlining
+            "-XX:+UseInlineCaches",
+            "-XX:+InlineSynchronizedMethods",
+            // String / allocation
+            "-XX:+OptimizeStringConcat",
+            "-XX:+OptimizeFill",
+            // TLAB — reduce per-thread allocation contention
+            "-XX:+UseTLAB",
+            "-XX:+ResizeTLAB",
             // Metaspace
             "-XX:MetaspaceSize=128M",
             "-XX:MaxMetaspaceSize=384M",
@@ -466,41 +485,20 @@ object FPSBoostConfig {
             // Networking sane defaults
             "-Dsun.net.client.defaultConnectTimeout=15000",
             "-Dsun.net.client.defaultReadTimeout=30000",
-            // Misc Minecraft modlauncher friendliness
+            // Misc Minecraft mod-launcher friendliness
             "-Dlog4j2.formatMsgNoLookups=true",
             "-Dfml.earlyprogresswindow=false",
-            // v5 LWJGL fast path
-            "-Dorg.lwjgl.util.NoChecks=true",
-            // v6 DroidBridge Launcher additions - CPU and memory optimizations
-            "-XX:+UseNUMA",
-            "-XX:+UseLargePages",
-            "-XX:+OptimizeStringConcat",
-            "-XX:+UseTypeSpeculation",
-            "-XX:TypeProfileLevel=222",
-            "-XX:OnStackReplacePercentage=140",
-            "-XX:CompileThreshold=1000",
-            "-XX:BackEdgeThreshold=10000",
-            "-XX:+UseLoopPredicate",
-            "-XX:+UseCountedLoopSafepoints",
-            "-XX:LoopStripMiningIter=1000",
-            "-XX:LoopStripMiningIterShortLoop=100",
-            "-XX:+OptimizeFill",
-            // Thread affinity and scheduling optimizations
-            "-XX:+UseThreadPriorities",
-            "-XX:ThreadPriorityPolicy=42",
-            "-XX:+UseCriticalThreadPriorities",
-            // NUMA optimizations
-            "-XX:+UseNUMAInterleaving",
-            "-XX:NUMAPageScanMethod=1",
-            // Compiler optimizations for hot paths
-            "-XX:+UseInlineCaches",
-            "-XX:+InlineSynchronizedMethods",
-            "-XX:+AggressiveOpts",
-            // Memory allocation optimizations
-            "-XX:+UseTLAB",
-            "-XX:+ResizeTLAB",
-            "-XX:TLABSize=256K",
-            "-XX:MinTLABSize=128K"
+            // LWJGL fast path
+            "-Dorg.lwjgl.util.NoChecks=true"
+            // NOTE: -XX:+AggressiveOpts removed — deleted in JDK 11, causes JVM abort on 17/21.
+            // NOTE: -XX:+UseLargePages / UseNUMA / UseNUMAInterleaving removed — require root or
+            //       kernel support not present on stock Android; harmless on desktop but adds noise.
+            // NOTE: -XX:ThreadPriorityPolicy=42 / +UseCriticalThreadPriorities removed —
+            //       non-standard values can destabilise Android's scheduler and cause ANRs.
+            // NOTE: -XX:+UseLoopPredicate removed — not a public Hotspot flag; causes JVM abort.
+            // NOTE: -XX:BackEdgeThreshold removed — Hotspot ignores it post JDK 8.
+            // NOTE: -XX:TLABSize / MinTLABSize removed — Hotspot auto-sizes TLAB correctly;
+            //       hard-coding 256K is detrimental on low-RAM devices.
         )
     }
 
@@ -537,8 +535,9 @@ object FPSBoostConfig {
                 "-XX:ConcGCThreads=1",
                 "-XX:G1HeapRegionSize=4M",
                 "-XX:-AlwaysPreTouch",
-                "-XX:CICompilerCount=2",
-                "-XX:TieredStopAtLevel=1"
+                "-XX:CICompilerCount=2"
+                // TieredStopAtLevel=1 removed: interpreter-only mode kills in-game FPS.
+                // Full tiered compilation is essential even on low-end devices.
             )
         }
         return profile.copy(
