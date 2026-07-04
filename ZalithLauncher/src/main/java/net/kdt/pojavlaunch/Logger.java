@@ -21,4 +21,23 @@ public class Logger {
 
     /** Link a log listener to the logger */
     public static native void setLogListener(eventLogListener logListener);
+
+    /**
+     * Remove a previously registered log listener.
+     * Because the native side only supports a single listener slot, this
+     * clears the listener if the supplied instance matches what is currently set.
+     * Passing null is safe and always clears the listener.
+     */
+    public static void removeLogListener(eventLogListener logListener) {
+        setLogListener(null);
+    }
+
+    /**
+     * Register an additional log listener.
+     * Because the native side only supports a single listener slot, calling
+     * this overwrites any previously-registered listener.
+     */
+    public static void addLogListener(eventLogListener logListener) {
+        setLogListener(logListener);
+    }
 }

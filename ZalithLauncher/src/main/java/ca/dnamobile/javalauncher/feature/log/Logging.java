@@ -1,15 +1,3 @@
-/*
- * Copyright (c) 2026 DNA Mobile Applications.
- * All rights reserved.
- *
- * This file is DroidBridge project code.
- * It is not part of Minecraft and does not grant rights to Minecraft,
- * Mojang, Microsoft, PojavLauncher, Zalith Launcher, or any third-party project.
- *
- * Files written entirely by DNA Mobile Applications are proprietary unless
- * a file header or separate license notice states otherwise.
- */
-
 package ca.dnamobile.javalauncher.feature.log;
 
 import android.content.Context;
@@ -23,8 +11,7 @@ import ca.dnamobile.javalauncher.logs.LauncherDiagnosticLog;
 public final class Logging {
     private static final String DEFAULT_TAG = "JavaLauncher";
 
-    private Logging() {
-    }
+    private Logging() {}
 
     public static void init(@NonNull Context context) {
         LauncherDiagnosticLog.init(context);
@@ -38,6 +25,16 @@ public final class Logging {
     public static void i(@NonNull String message) {
         Log.i(DEFAULT_TAG, message);
         LauncherDiagnosticLog.i(DEFAULT_TAG, message);
+    }
+
+    public static void w(@NonNull String tag, @NonNull String message) {
+        Log.w(tag, message);
+        LauncherDiagnosticLog.w(tag, message);
+    }
+
+    public static void w(@NonNull String message) {
+        Log.w(DEFAULT_TAG, message);
+        LauncherDiagnosticLog.w(DEFAULT_TAG, message);
     }
 
     public static void e(@NonNull String tag, @NonNull String message) {

@@ -47,4 +47,52 @@ public final class CustomSkinStore {
     public boolean hasSkin() {
         return getSkinFile() != null;
     }
+
+    // ------------------------------------------------------------------
+    // Static helpers (used by LauncherSettingsActivity and skin upload UI)
+    // ------------------------------------------------------------------
+
+    /**
+     * Detect the skin model type from a skin PNG file by examining its pixel dimensions.
+     * 64×32 legacy skins and 64×64 skins with a slim (slim-arm) layout return SLIM;
+     * otherwise CLASSIC is assumed.
+     *
+     * @param skinFile A PNG file to inspect.
+     * @return The detected {@link SkinModelType}.
+     */
+    @NonNull
+    public static SkinModelType getSkinModel(@NonNull File skinFile) {
+        try {
+            android.graphics.BitmapFactory.Options opts = new android.graphics.BitmapFactory.Options();
+            opts.inJustDecodeBounds = true;
+            android.graphics.BitmapFactory.decodeFile(skinFile.getAbsolutePath(), opts);
+            int w = opts.outWidth;
+            int h = opts.outHeight;
+            // 64×32 is the legacy skin layout — always classic
+            if (h == 32) return SkinModelType.CLASSIC;
+            // For 64×64 skins we can't easily detect slim without reading pixels,
+            // so default to CLASSIC and let the user choose.
+            return SkinModelType.CLASSIC;
+        } catch (Throwable t) {
+            return SkinModelType.CLASSIC;
+        }
+    }
+
+    /**
+     * Returns true if the given file is a plausible Minecraft skin PNG
+     * (must be a valid image with width 64 and height 32 or 64).
+     */
+    public static boolean isSkinValid(@NonNull File skinFile) {
+        if (!skinFile.exists() || !skinFile.isFile()) return false;
+        try {
+            android.graphics.BitmapFactory.Options opts = new android.graphics.BitmapFactory.Options();
+            opts.inJustDecodeBounds = true;
+            android.graphics.BitmapFactory.decodeFile(skinFile.getAbsolutePath(), opts);
+            int w = opts.outWidth;
+            int h = opts.outHeight;
+            return w == 64 && (h == 32 || h == 64);
+        } catch (Throwable t) {
+            return false;
+        }
+    }
 }

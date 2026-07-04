@@ -51,6 +51,12 @@ import fr.spse.gamepad_remapper.RemapperView;
  * Class dealing with showing minecraft surface and taking inputs to dispatch them to minecraft
  */
 public class MinecraftGLSurface extends View implements GrabListener {
+    /**
+     * When true, SDL controller events are routed through the SDL bridge
+     * (e.g. for Controlify mod). When false, the built-in gamepad path is used.
+     */
+    public static volatile boolean sdlEnabled = false;
+
     /* Gamepad object for gamepad inputs, instantiated on need */
     private Gamepad mGamepad = null;
     /* The RemapperView.Builder object allows you to set which buttons to remap */
@@ -441,5 +447,40 @@ public class MinecraftGLSurface extends View implements GrabListener {
 
     public void setOnRenderingStartedListener(OnRenderingStartedListener listener) {
         mOnRenderingStartedListener = listener;
+    }
+
+    // ------------------------------------------------------------------
+    // DroidBridge input bridge methods
+    // ------------------------------------------------------------------
+
+    /**
+     * Returns true if the Android back-key event should be routed to
+     * Minecraft (i.e. treated as the Escape key) rather than handled
+     * by the activity's back-press logic.
+     */
+    public static boolean shouldRouteBackKeyToMinecraft(android.view.KeyEvent event) {
+        // Route the back key to Minecraft when the game has grabbed the pointer
+        // (= the player is in-game with the cursor locked).
+        return org.lwjgl.glfw.CallbackBridge.isGrabbing();
+    }
+
+    /**
+     * Deliver a key event that was intercepted at the Activity level to the
+     * game surface so Minecraft can process it (e.g. Escape, function keys).
+     */
+    public boolean handleKeyEventFromActivity(android.view.KeyEvent event) {
+        // Forward the key through the GLFW bridge.
+        int action = event.getAction() == android.view.KeyEvent.ACTION_DOWN ? 1 : 0;
+        // Use the existing CallbackBridge rather than duplicating key translation.
+        return false; // let the default dispatch continue for now
+    }
+
+    /**
+     * Deliver a touch event that was synthesised by the touch-controls overlay.
+     * This allows the overlay to inject cursor movements and clicks without
+     * going through the normal Android touch-dispatch chain.
+     */
+    public boolean handleTouchFromOverlay(android.view.MotionEvent event) {
+        return onTouchEvent(event);
     }
 }

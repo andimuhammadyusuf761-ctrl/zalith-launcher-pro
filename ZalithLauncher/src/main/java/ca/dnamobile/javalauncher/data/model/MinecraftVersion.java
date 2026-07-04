@@ -15,7 +15,10 @@ public final class MinecraftVersion {
         this.releaseTime = releaseTime;
     }
 
-    public boolean isRelease() { return "release".equals(type); }
+    @NonNull public String getId()   { return id; }
+    @NonNull public String getType() { return type; }
+
+    public boolean isRelease()  { return "release".equals(type); }
     public boolean isSnapshot() { return "snapshot".equals(type); }
 
     @NonNull @Override public String toString() { return id; }

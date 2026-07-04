@@ -96,6 +96,18 @@ public class Architecture {
 	 * @param arch The architecture as an int.
 	 * @return "arm64" || "arm" || "x86_64" || "x86" || "UNSUPPORTED_ARCH"
 	 */
+	/**
+	 * Returns the Android ABI string for the given architecture int.
+	 * E.g. ARCH_ARM64 → "arm64-v8a", ARCH_ARM → "armeabi-v7a"
+	 */
+	public static String androidAbiAsString(int arch) {
+		if (arch == ARCH_ARM64) return "arm64-v8a";
+		if (arch == ARCH_ARM) return "armeabi-v7a";
+		if (arch == ARCH_X86_64) return "x86_64";
+		if (arch == ARCH_X86) return "x86";
+		return "unknown";
+	}
+
 	public static String archAsString(int arch){
 		if(arch == ARCH_ARM64) return "arm64";
 		if(arch == ARCH_ARM) return "arm";

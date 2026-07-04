@@ -22,6 +22,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import ca.dnamobile.javalauncher.logs.LauncherLogManager;
+import com.movtery.zalithlauncher.R;
 
 /**
  * Clean JavaLauncher exit-message target for the native exit hook.

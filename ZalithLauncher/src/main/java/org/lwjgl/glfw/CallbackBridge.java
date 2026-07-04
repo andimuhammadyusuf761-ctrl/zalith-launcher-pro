@@ -195,6 +195,76 @@ public class CallbackBridge {
         }
     }
 
+    // ------------------------------------------------------------------
+    // DroidBridge extensions — called by touch controls and gamepad code
+    // ------------------------------------------------------------------
+
+    /** Signal whether the game's input system is ready to receive events. */
+    public static void setInputReady(boolean ready) {
+        // No-op stub — readiness is managed by the existing Zalith input stack.
+    }
+
+    /** Register a BTA gamepad identity for the given SDL joystick index. */
+    public static void setBtaGamepadIdentity(int joystickIndex, String name, String guid) {}
+
+    /** Forward a BTA joystick axis motion event (float value in [-1.0, 1.0]). */
+    public static void sendBtaGamepadMotion(int joystickIndex, int axis, float value) {}
+
+    /** Forward a BTA joystick hat/d-pad event (int SDL hat value). */
+    public static void sendBtaGamepadMotion(int joystickIndex, int hat, int value) {}
+
+    /** Forward a BTA joystick button press/release event. */
+    public static void sendBtaGamepadButton(int joystickIndex, int button, boolean pressed) {}
+
+    /**
+     * Full BTA gamepad motion event carrying both sticks, both triggers, and all four
+     * d-pad directions in a single call (used by DroidBridge's GamepadInputController).
+     *
+     * @param joystickIndex  SDL joystick index / Android InputDevice ID
+     * @param name           Human-readable device name
+     * @param descriptor     Unique device descriptor from {@link android.view.InputDevice}
+     * @param leftX          Left stick X axis [-1.0, 1.0]
+     * @param leftY          Left stick Y axis [-1.0, 1.0]
+     * @param rightX         Right stick X axis [-1.0, 1.0]
+     * @param rightY         Right stick Y axis [-1.0, 1.0]
+     * @param leftTrigger    Left trigger [0.0, 1.0]
+     * @param rightTrigger   Right trigger [0.0, 1.0]
+     * @param dpadUp         D-pad up pressed
+     * @param dpadDown       D-pad down pressed
+     * @param dpadLeft       D-pad left pressed
+     * @param dpadRight      D-pad right pressed
+     */
+    public static void sendBtaGamepadMotion(
+            int joystickIndex,
+            String name,
+            String descriptor,
+            float leftX, float leftY,
+            float rightX, float rightY,
+            float leftTrigger, float rightTrigger,
+            boolean dpadUp, boolean dpadDown,
+            boolean dpadLeft, boolean dpadRight) {
+        // No-op stub — implement via JNI bridge once the native BTA layer is ready.
+    }
+
+    /**
+     * Full BTA gamepad button event carrying device identity metadata alongside the
+     * button state (used by DroidBridge's GamepadInputController).
+     *
+     * @param joystickIndex  SDL joystick index / Android InputDevice ID
+     * @param name           Human-readable device name
+     * @param descriptor     Unique device descriptor from {@link android.view.InputDevice}
+     * @param buttonCode     Android {@link android.view.KeyEvent} key code
+     * @param pressed        true = pressed, false = released
+     */
+    public static void sendBtaGamepadButton(
+            int joystickIndex,
+            String name,
+            String descriptor,
+            int buttonCode,
+            boolean pressed) {
+        // No-op stub — implement via JNI bridge once the native BTA layer is ready.
+    }
+
     @Keep @CriticalNative public static native void nativeSetUseInputStackQueue(boolean useInputStackQueue);
 
     @Keep @CriticalNative private static native boolean nativeSendChar(char codepoint);

@@ -25,6 +25,7 @@ import net.kdt.pojavlaunch.Tools;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.movtery.zalithlauncher.R;
 import ca.dnamobile.javalauncher.feature.log.Logging;
 import ca.dnamobile.javalauncher.feature.unpack.AbstractUnpackTask;
 import ca.dnamobile.javalauncher.feature.unpack.Components;

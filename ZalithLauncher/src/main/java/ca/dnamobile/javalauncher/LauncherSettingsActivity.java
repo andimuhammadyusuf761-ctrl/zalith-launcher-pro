@@ -78,6 +78,7 @@ import ca.dnamobile.javalauncher.update.LauncherUpdateDialogs;
 import ca.dnamobile.javalauncher.update.LauncherUpdatePreferences;
 import ca.dnamobile.javalauncher.utils.FullscreenUtils;
 import ca.dnamobile.javalauncher.utils.path.PathManager;
+import com.movtery.zalithlauncher.R;
 
 public final class LauncherSettingsActivity extends AppCompatActivity {
     private static final String SETTINGS_DEFAULTS_PREFS = "launcher_settings_defaults";

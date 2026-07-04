@@ -772,4 +772,31 @@ public final class Tools {
         if(weakReference == null) return null;
         return weakReference.get();
     }
+
+    // ------------------------------------------------------------------
+    // SDL bridge helpers (DroidBridge / Controlify)
+    // ------------------------------------------------------------------
+
+    /**
+     * SDL-related helpers used by DroidBridge's Controlify integration.
+     * The methods here initialise the SDL subsystems that are needed for
+     * SDL-based controller mods to discover and communicate with gamepads.
+     */
+    public static final class SDL {
+        private SDL() {}
+
+        /**
+         * Initialise the SDL controller/joystick subsystems.
+         * Must be called after {@code org.libsdl.app.SDL.initialize()} and
+         * {@code org.libsdl.app.SDLControllerManager.initialize()}.
+         */
+        public static void initializeControllerSubsystems() {
+            try {
+                org.libsdl.app.SDLControllerManager.initialize();
+                org.libsdl.app.SDLControllerManager.pollInputDevices();
+            } catch (Throwable t) {
+                android.util.Log.w("Tools.SDL", "initializeControllerSubsystems failed: " + t);
+            }
+        }
+    }
 }

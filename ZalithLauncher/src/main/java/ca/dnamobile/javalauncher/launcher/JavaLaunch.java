@@ -25,7 +25,7 @@ public final class JavaLaunch {
     public static void launch(@NonNull Context context,
                               @NonNull LauncherInstance instance,
                               @NonNull LaunchPlan plan) {
-        Logging.i(TAG, "Launching instance: " + instance.instanceId
+        Logging.i(TAG, "Launching instance: " + instance.getId()
                 + " with plan: " + plan);
         // Delegate to Zalith's existing launch infrastructure via an Intent or
         // directly calling net.kdt.pojavlaunch.LauncherActivity launch flow.
